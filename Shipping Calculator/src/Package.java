@@ -1,5 +1,5 @@
 import GoodsCategory;
-
+//Package Class
 public class Package {
     private double height;
     private double width;
