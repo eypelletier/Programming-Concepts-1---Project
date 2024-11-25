@@ -1,4 +1,3 @@
-import GoodsCategory;
 //Package Class
 public class Package {
     private double height;
@@ -35,7 +34,7 @@ public class Package {
     public double getHeight(){ return this.height; }
     public double getWidth(){ return this.width; }
     public double getLength(){ return this.length; }
-    public double getWeight(){ return this.width; }
+    public double getWeight(){ return this.weight; }
     public GoodsCategory getGoodsCategory(){ return this.goodsCategory; }
 
     //Return the value of the largest dimension of the package
