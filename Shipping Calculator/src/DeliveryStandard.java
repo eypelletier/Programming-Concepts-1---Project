@@ -1,14 +1,14 @@
 public class DeliveryStandard {
     // Fields
     private String name;
-    private String deliveryModality;
+    private DeliveryModality deliveryModality;
     private String deliveryPriority;
     private double surchargeRate;
     private double maxWeight;
     private double maxAllowableDimensions;
 
     // Constructor
-    public DeliveryStandard(String name, String deliveryModality, String deliveryPriority,
+    public DeliveryStandard(String name, DeliveryModality deliveryModality, String deliveryPriority,
                             double surchargeRate, double maxWeight, double maxAllowableDimensions) {
         this.name = name;
         this.deliveryModality = deliveryModality;
@@ -23,7 +23,7 @@ public class DeliveryStandard {
         return name;
     }
 
-    public String getDeliveryModality() {
+    public DeliveryModality getDeliveryModality() {
         return deliveryModality;
     }
 
@@ -48,7 +48,7 @@ public class DeliveryStandard {
         this.name = name;
     }
 
-    public void setDeliveryModality(String deliveryModality) {
+    public void setDeliveryModality(DeliveryModality deliveryModality) {
         this.deliveryModality = deliveryModality;
     }
 
