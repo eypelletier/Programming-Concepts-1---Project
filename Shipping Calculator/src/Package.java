@@ -4,7 +4,7 @@ public class Package {
     private double width;
     private double length;
     private double weight;
-    private GoodsCategory goodsCategory;
+    private GoodsCategory goodsClassification;
 
     public Package setHeight(double height){ 
         this.height = height; 
@@ -26,8 +26,8 @@ public class Package {
         return this;
     }
 
-    public Package setGoodsCategory(GoodsCategory category){
-        this.goodsCategory = category;
+    public Package setGoodsClassification(GoodsCategory category){
+        this.goodsClassification = category;
         return this;
     }
 
@@ -35,7 +35,7 @@ public class Package {
     public double getWidth(){ return this.width; }
     public double getLength(){ return this.length; }
     public double getWeight(){ return this.weight; }
-    public GoodsCategory getGoodsCategory(){ return this.goodsCategory; }
+    public GoodsCategory getGoodsClassification(){ return this.goodsClassification; }
 
     //Return the value of the largest dimension of the package
     public double getLargestDimension(){
