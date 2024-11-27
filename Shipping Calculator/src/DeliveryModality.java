@@ -8,6 +8,6 @@ public class DeliveryModality {
     public double getMaxWeight() { return maxWeight; }
 
     public void setName(String name){ this.name = name; }
-    public void setMaxAllowableDimension(double maxAllowableDimension) { this.maxAllowableDimension = maxAllowableDimension; }
-    public void setMaxWeight(double maxWeight) { this.maxWeight = maxWeight; }
+    public void setMaxAllowableDimension(double dimension) { this.maxAllowableDimension = dimension; }
+    public void setMaxWeight(double weight) { this.maxWeight = weight; }
 }
