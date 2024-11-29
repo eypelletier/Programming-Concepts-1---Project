@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ui.HomeWindow">
+  <grid id="27dc6" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <toolbar id="faa76">
+        <constraints border-constraint="South"/>
+        <properties>
+          <margin top="10" left="10" bottom="10" right="10"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="13353" class="javax.swing.JButton" binding="option1Button" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Option 1"/>
+            </properties>
+          </component>
+          <component id="7af42" class="javax.swing.JButton" binding="option2Button" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Option 2"/>
+            </properties>
+          </component>
+          <component id="57192" class="javax.swing.JButton" binding="option3Button" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Option 3"/>
+            </properties>
+          </component>
+        </children>
+      </toolbar>
+      <component id="27983" class="javax.swing.JLabel" binding="centreGraphic">
+        <constraints border-constraint="Center"/>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>
