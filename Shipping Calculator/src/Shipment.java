@@ -28,6 +28,46 @@ public class Shipment {
         this.packages = packages;
     }
 
+    public String getOrigin() {
+        return origin;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public DeliveryModality getShippingMethod() {
+        return shippingMethod;
+    }
+
+    public DeliveryStandard getShippingSpeed() {
+        return shippingSpeed;
+    }
+
+    public List<Package> getPackages() {
+        return packages;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public void setShippingMethod(DeliveryModality shippingMethod) {
+        this.shippingMethod = shippingMethod;
+    }
+
+    public void setShippingSpeed(DeliveryStandard shippingSpeed) {
+        this.shippingSpeed = shippingSpeed;
+    }
+
+    public void setPackages(List<Package> packages) {
+        this.packages = packages;
+    }
+
     // Method to generate tracking number
     public String generateTrackingNumber() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -90,25 +130,5 @@ public class Shipment {
         }
 
         return surcharge;
-    }
-
-    public String getOrigin() {
-        return origin;
-    }
-
-    public String getDestination() {
-        return destination;
-    }
-
-    public DeliveryModality getShippingMethod() {
-        return shippingMethod;
-    }
-
-    public DeliveryStandard getShippingSpeed() {
-        return shippingSpeed;
-    }
-
-    public List<Package> getPackages() {
-        return packages;
     }
 }
