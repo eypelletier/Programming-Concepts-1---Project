@@ -1,3 +1,5 @@
+//DeliveryStandard class definition file
+
 public class DeliveryStandard {
     private String type;
     private final double maxHeight;
