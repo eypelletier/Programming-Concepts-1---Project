@@ -1,72 +1,32 @@
-public class DeliveryStandard {
-    private String name;
-    private DeliveryModality transportMethod;
-    private String deliveryPriority;
-    private double surchargeRate;
-    private double maxWeight;
-    private double maxAllowableDimension;
+public enum DeliveryStandard {
+    STANDARD(100, 200, 150, 1000),
+    EXPRESS(50, 150, 100, 500);
 
-    public static final String STANDARD = "Standard";
-    public static final String EXPRESS = "Express";
+    private final double maxHeight;
+    private final double maxLength;
+    private final double maxWidth;
+    private final double maxWeight;
 
-    public DeliveryStandard(String transportMethodName, DeliveryModality transportMethod, String deliveryPriority) {
-        this.transportMethod = transportMethod;
-        this.deliveryPriority = deliveryPriority;
-        this.maxWeight = transportMethod.getMaxWeight();
-        this.maxAllowableDimension = transportMethod.getMaxAllowableDimension();
-
-        // Setting surcharge based on delivery priority
-        if (STANDARD.equals(deliveryPriority)) {
-            this.surchargeRate = 0.1;  // 10% surcharge for Standard
-        } else if (EXPRESS.equals(deliveryPriority)) {
-            this.surchargeRate = 0.25;  // 25% surcharge for Express
-        }
-
-        // Constructing name as a combination of transport method and priority
-        this.name = deliveryPriority + " - " + transportMethodName;
+    DeliveryStandard(double maxHeight, double maxLength, double maxWidth, double maxWeight) {
+        this.maxHeight = maxHeight;
+        this.maxLength = maxLength;
+        this.maxWidth = maxWidth;
+        this.maxWeight = maxWeight;
     }
 
-    public String getName() {
-        return name;
+    public double getMaxHeight() {
+        return maxHeight;
     }
 
-    public DeliveryModality getTransportMethod() {
-        return transportMethod;
+    public double getMaxLength() {
+        return maxLength;
     }
 
-    public String getDeliveryPriority() {
-        return deliveryPriority;
-    }
-
-    public double getSurchargeRate() {
-        return surchargeRate;
+    public double getMaxWidth() {
+        return maxWidth;
     }
 
     public double getMaxWeight() {
         return maxWeight;
-    }
-
-    public double getMaxAllowableDimension() {
-        return maxAllowableDimension;
-    }
-
-    public void setTransportMethod(DeliveryModality transportMethod) {
-        this.transportMethod = transportMethod;
-    }
-
-    public void setDeliveryPriority(String deliveryPriority) {
-        this.deliveryPriority = deliveryPriority;
-    }
-
-    public void setSurchargeRate(double surchargeRate) {
-        this.surchargeRate = surchargeRate;
-    }
-
-    public void setMaxWeight(double maxWeight) {
-        this.maxWeight = maxWeight;
-    }
-
-    public void setMaxAllowableDimension(double maxAllowableDimension) {
-        this.maxAllowableDimension = maxAllowableDimension;
     }
 }

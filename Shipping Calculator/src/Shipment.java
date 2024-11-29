@@ -4,90 +4,111 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Shipment {
-    private List<Package> packages; // Assuming Package is another class that you define
-    private String trackingNumber;
     private String origin;
     private String destination;
-    private DeliveryStandard shipmentDeliveryMethod;
+    private DeliveryModality shippingMethod;
+    private DeliveryStandard shippingSpeed;
+    private List<Package> packages;
 
-    // Constructor
-    public Shipment(List<Package> packages, String origin, String destination, DeliveryStandard shipmentDeliveryMethod) {
-        this.packages = packages;
+    // Constants for origin and destination location codes
+    public static final String MONTREAL = "Montreal";
+    public static final String TORONTO = "Toronto";
+    public static final String VANCOUVER = "Vancouver";
+
+    // Maps for location codes to numbers
+    private static final int MONTREAL_CODE = 21;
+    private static final int TORONTO_CODE = 22;
+    private static final int VANCOUVER_CODE = 23;
+
+    public Shipment(String origin, String destination, DeliveryModality shippingMethod, DeliveryStandard shippingSpeed, List<Package> packages) {
         this.origin = origin;
         this.destination = destination;
-        this.shipmentDeliveryMethod = shipmentDeliveryMethod;
-        this.trackingNumber = generateTrackingNumber();
+        this.shippingMethod = shippingMethod;
+        this.shippingSpeed = shippingSpeed;
+        this.packages = packages;
     }
 
-    // Generate the tracking number based on current date and origin/destination codes
-    private String generateTrackingNumber() {
-        // Get the current date in yyyyMMdd format
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String datePart = sdf.format(new Date());
+    // Method to generate tracking number
+    public String generateTrackingNumber() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        String date = dateFormat.format(new Date()); // Get current date in yyyyMMdd format
 
-        // Number for origin and destination
+        Random rand = new Random();
+
+        // Get origin and destination location codes
         int originCode = getLocationCode(origin);
         int destinationCode = getLocationCode(destination);
 
-        // Random number to append to end of tracking number
-        Random rand = new Random();
-        int numRand = rand.nextInt(100);
-
-        return "TRK" + datePart + originCode + destinationCode + numRand;
+        // Generate the tracking number using the current date and the location codes
+        return "TRK" + date + originCode + destinationCode + rand.nextInt(100);
     }
 
-    // Get location code for origin/destination
+    // Method to get codes for origin and destination
     private int getLocationCode(String location) {
-        switch (location.toLowerCase()) {
-            case "montreal":
-                return 11;
-            case "toronto":
-                return 12;
-            case "vancouver":
-                return 13;
+        switch (location) {
+            case MONTREAL:
+                return MONTREAL_CODE;
+            case TORONTO:
+                return TORONTO_CODE;
+            case VANCOUVER:
+                return VANCOUVER_CODE;
             default:
-                throw new IllegalArgumentException("Invalid location");
+                throw new IllegalArgumentException("Invalid location: " + location);
         }
     }
 
-    // Getters and setters
-    public List<Package> getPackages() {
-        return packages;
+    // Method to calculate shipping cost
+    public double calculateShippingCost() {
+        double baseRate = calculateBaseRate();
+        double surcharge = calculateSurcharge();
+        return baseRate + surcharge;
     }
 
-    public void setPackages(List<Package> packages) {
-        this.packages = packages;
+    // Method to calculate the base rate of the shipment
+    private double calculateBaseRate() {
+        if (origin.equals("Montreal") && destination.equals("Toronto") || origin.equals("Toronto") && destination.equals("Montreal")) {
+            return 10.0;
+        } else if (origin.equals("Montreal") && destination.equals("Vancouver") || origin.equals("Vancouver") && destination.equals("Montreal")) {
+            return 60.0;
+        }
+        return 45.0;
     }
 
-    public String getTrackingNumber() {
-        return trackingNumber;
-    }
+    //Method to calculate surcharge
+    private double calculateSurcharge() {
+        double surcharge = 0;
+        for (Package pkg : packages) {
+            if (pkg.getHeight() > shippingMethod.getMaxAllowableDimension() || pkg.getLength() > shippingMethod.getMaxAllowableDimension() ||
+                    pkg.getWidth() > shippingMethod.getMaxAllowableDimension() || pkg.getWeight() > shippingMethod.getMaxWeight()) {
+                surcharge += 10.0;
+            }
+        }
 
-    public void setTrackingNumber(String trackingNumber) {
-        this.trackingNumber = trackingNumber;
+        // Additional surcharge for shipping shippingSpeed
+        if (shippingSpeed == DeliveryStandard.EXPRESS) {
+            surcharge += 5.0;
+        }
+
+        return surcharge;
     }
 
     public String getOrigin() {
         return origin;
     }
 
-    public void setOrigin(String origin) {
-        this.origin = origin;
-    }
-
     public String getDestination() {
         return destination;
     }
 
-    public void setDestination(String destination) {
-        this.destination = destination;
+    public DeliveryModality getShippingMethod() {
+        return shippingMethod;
     }
 
-    public DeliveryStandard getShipmentDeliveryMethod() {
-        return shipmentDeliveryMethod;
+    public DeliveryStandard getShippingSpeed() {
+        return shippingSpeed;
     }
 
-    public void setShipmentDeliveryMethod(DeliveryStandard shipmentDeliveryMethod) {
-        this.shipmentDeliveryMethod = shipmentDeliveryMethod;
+    public List<Package> getPackages() {
+        return packages;
     }
 }
