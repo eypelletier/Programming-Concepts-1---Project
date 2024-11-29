@@ -1,30 +1,37 @@
 public class DeliveryStandard {
-    // Fields
     private String name;
-    private DeliveryModality deliveryModality;
+    private DeliveryModality transportMethod;
     private String deliveryPriority;
     private double surchargeRate;
     private double maxWeight;
-    private double maxAllowableDimensions;
+    private double maxAllowableDimension;
 
-    // Constructor
-    public DeliveryStandard(String name, DeliveryModality deliveryModality, String deliveryPriority,
-                            double surchargeRate, double maxWeight, double maxAllowableDimensions) {
-        this.name = name;
-        this.deliveryModality = deliveryModality;
+    public static final String STANDARD = "Standard";
+    public static final String EXPRESS = "Express";
+
+    public DeliveryStandard(String transportMethodName, DeliveryModality transportMethod, String deliveryPriority) {
+        this.transportMethod = transportMethod;
         this.deliveryPriority = deliveryPriority;
-        this.surchargeRate = surchargeRate;
-        this.maxWeight = maxWeight;
-        this.maxAllowableDimensions = maxAllowableDimensions;
+        this.maxWeight = transportMethod.getMaxWeight();
+        this.maxAllowableDimension = transportMethod.getMaxAllowableDimension();
+
+        // Setting surcharge based on delivery priority
+        if (STANDARD.equals(deliveryPriority)) {
+            this.surchargeRate = 0.1;  // 10% surcharge for Standard
+        } else if (EXPRESS.equals(deliveryPriority)) {
+            this.surchargeRate = 0.25;  // 25% surcharge for Express
+        }
+
+        // Constructing name as a combination of transport method and priority
+        this.name = deliveryPriority + " - " + transportMethodName;
     }
 
-    // Getter methods
     public String getName() {
         return name;
     }
 
-    public DeliveryModality getDeliveryModality() {
-        return deliveryModality;
+    public DeliveryModality getTransportMethod() {
+        return transportMethod;
     }
 
     public String getDeliveryPriority() {
@@ -39,17 +46,12 @@ public class DeliveryStandard {
         return maxWeight;
     }
 
-    public double getMaxAllowableDimensions() {
-        return maxAllowableDimensions;
+    public double getMaxAllowableDimension() {
+        return maxAllowableDimension;
     }
 
-    // Setter methods
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDeliveryModality(DeliveryModality deliveryModality) {
-        this.deliveryModality = deliveryModality;
+    public void setTransportMethod(DeliveryModality transportMethod) {
+        this.transportMethod = transportMethod;
     }
 
     public void setDeliveryPriority(String deliveryPriority) {
@@ -64,8 +66,7 @@ public class DeliveryStandard {
         this.maxWeight = maxWeight;
     }
 
-    public void setMaxAllowableDimensions(double maxAllowableDimensions) {
-        this.maxAllowableDimensions = maxAllowableDimensions;
+    public void setMaxAllowableDimension(double maxAllowableDimension) {
+        this.maxAllowableDimension = maxAllowableDimension;
     }
-
 }
