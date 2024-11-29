@@ -1,12 +1,10 @@
 import java.util.Scanner;
-import ui.HomeWindow;
 
 public class ShippingCalculator {
     public static void main(String[] args) {
-        HomeWindow hw = new HomeWindow();
 
-        /*
         Scanner input = new Scanner(System.in);
+
         System.out.print("Enter height in cm: ");
         double height = input.nextDouble();
         System.out.print("Enter width in cm: ");
@@ -15,6 +13,6 @@ public class ShippingCalculator {
         double length = input.nextDouble();
         System.out.print("Enter weight in kg: ");
         double weight = input.nextDouble();
-        */
+
     }
 }
