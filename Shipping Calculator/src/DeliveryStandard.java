@@ -1,71 +1,32 @@
-public class DeliveryStandard {
-    // Fields
-    private String name;
-    private DeliveryModality deliveryModality;
-    private String deliveryPriority;
-    private double surchargeRate;
-    private double maxWeight;
-    private double maxAllowableDimensions;
+public enum DeliveryStandard {
+    STANDARD(100, 200, 150, 1000),
+    EXPRESS(50, 150, 100, 500);
 
-    // Constructor
-    public DeliveryStandard(String name, DeliveryModality deliveryModality, String deliveryPriority,
-                            double surchargeRate, double maxWeight, double maxAllowableDimensions) {
-        this.name = name;
-        this.deliveryModality = deliveryModality;
-        this.deliveryPriority = deliveryPriority;
-        this.surchargeRate = surchargeRate;
+    private final double maxHeight;
+    private final double maxLength;
+    private final double maxWidth;
+    private final double maxWeight;
+
+    DeliveryStandard(double maxHeight, double maxLength, double maxWidth, double maxWeight) {
+        this.maxHeight = maxHeight;
+        this.maxLength = maxLength;
+        this.maxWidth = maxWidth;
         this.maxWeight = maxWeight;
-        this.maxAllowableDimensions = maxAllowableDimensions;
     }
 
-    // Getter methods
-    public String getName() {
-        return name;
+    public double getMaxHeight() {
+        return maxHeight;
     }
 
-    public DeliveryModality getDeliveryModality() {
-        return deliveryModality;
+    public double getMaxLength() {
+        return maxLength;
     }
 
-    public String getDeliveryPriority() {
-        return deliveryPriority;
-    }
-
-    public double getSurchargeRate() {
-        return surchargeRate;
+    public double getMaxWidth() {
+        return maxWidth;
     }
 
     public double getMaxWeight() {
         return maxWeight;
     }
-
-    public double getMaxAllowableDimensions() {
-        return maxAllowableDimensions;
-    }
-
-    // Setter methods
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDeliveryModality(DeliveryModality deliveryModality) {
-        this.deliveryModality = deliveryModality;
-    }
-
-    public void setDeliveryPriority(String deliveryPriority) {
-        this.deliveryPriority = deliveryPriority;
-    }
-
-    public void setSurchargeRate(double surchargeRate) {
-        this.surchargeRate = surchargeRate;
-    }
-
-    public void setMaxWeight(double maxWeight) {
-        this.maxWeight = maxWeight;
-    }
-
-    public void setMaxAllowableDimensions(double maxAllowableDimensions) {
-        this.maxAllowableDimensions = maxAllowableDimensions;
-    }
-
 }
