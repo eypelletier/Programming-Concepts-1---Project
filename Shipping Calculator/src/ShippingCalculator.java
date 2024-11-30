@@ -53,8 +53,8 @@ public class ShippingCalculator {
                 Please select the method of transport:
                 1. Truck
                 2. Rail
-                3.Sea
-                4.Air""");
+                3. Sea
+                4. Air""");
         String methodOfTransport = "Truck";
 
         System.out.print("""
