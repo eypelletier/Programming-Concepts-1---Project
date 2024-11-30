@@ -31,19 +31,19 @@ public class ShippingCalculator {
 
             System.out.println("Package" + (i + 1) + ": ");
             System.out.print("Enter package label:");
-            String pkglabel = input.nextLine();
-            pkg.setLabel(pkglabel);
+            String pkgLabel = input.nextLine();
+            pkg.setLabel(pkgLabel);
 
             System.out.print("Enter package dimensions (Height x Width x Length in cm and Weight in kg):");
-            double pkgheight = input.nextDouble();
-            double pkgwidth = input.nextDouble();
-            double pkglength = input.nextDouble();
-            double pkgweight = input.nextDouble();
+            double pkgHeight = input.nextDouble();
+            double pkgWidth = input.nextDouble();
+            double pkgLength = input.nextDouble();
+            double pkgWeight = input.nextDouble();
             input.nextLine();
-            pkg.setHeight(pkgheight);
-            pkg.setLength(pkglength);
-            pkg.setWidth(pkgwidth);
-            pkg.setWeight(pkgweight);
+            pkg.setHeight(pkgHeight);
+            pkg.setLength(pkgLength);
+            pkg.setWidth(pkgWidth);
+            pkg.setWeight(pkgWeight);
 
             //Create menu for type of goods
             GoodsCategory goodsCategory = null;
