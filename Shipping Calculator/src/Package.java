@@ -1,10 +1,20 @@
 //Package Class
 public class Package {
+    private String label;
     private double height;
     private double width;
     private double length;
     private double weight;
     private GoodsCategory goodsClassification;
+
+    public Package() {
+        this.label = "[N/A]";
+        this.height = 0.0;
+        this.width = 0.0;
+        this.length = 0.0;
+        this.weight = 0.0;
+        this.goodsClassification = null;
+    }
 
     public Package setHeight(double height){ 
         this.height = height; 
@@ -26,6 +36,10 @@ public class Package {
         return this;
     }
 
+    public Package setLabel(String label){
+        this.label = label;
+    }
+
     public Package setGoodsClassification(GoodsCategory category){
         this.goodsClassification = category;
         return this;
@@ -35,7 +49,11 @@ public class Package {
     public double getWidth(){ return this.width; }
     public double getLength(){ return this.length; }
     public double getWeight(){ return this.weight; }
-    public GoodsCategory getGoodsClassification(){ return this.goodsClassification; }
+    public String getLabel(){ return this.label; }
+
+    public GoodsCategory getGoodsClassification(){
+        return new GoodsCategory(this.goodsClassification);
+    }
 
     //Return the value of the largest dimension of the package
     public double getLargestDimension(){
