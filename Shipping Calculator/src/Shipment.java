@@ -2,13 +2,14 @@ import java.util.List;
 import java.util.Random;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.ArrayList;
 
 public class Shipment {
     private String origin;
     private String destination;
     private DeliveryModality shippingMethod;
     private DeliveryStandard shippingSpeed;
-    private List<Package> packages;
+    private ArrayList<Package> shipmentPackages;
 
     // Constants for origin and destination location codes
     public static final String MONTREAL = "Montreal";
@@ -20,12 +21,12 @@ public class Shipment {
     private static final int TORONTO_CODE = 22;
     private static final int VANCOUVER_CODE = 23;
 
-    public Shipment(String origin, String destination, DeliveryModality shippingMethod, DeliveryStandard shippingSpeed, List<Package> packages) {
-        this.origin = origin;
-        this.destination = destination;
-        this.shippingMethod = shippingMethod;
-        this.shippingSpeed = shippingSpeed;
-        this.packages = packages;
+    public Shipment() {
+        this.origin = "N/A";
+        this.destination = "N/A";
+        this.shippingMethod = null;
+        this.shippingSpeed = null;
+        shipmentPackages = new ArrayList<>();
     }
 
     public String getOrigin() {
@@ -44,8 +45,8 @@ public class Shipment {
         return shippingSpeed;
     }
 
-    public List<Package> getPackages() {
-        return packages;
+    public ArrayList<Package> getPackages() {
+        return shipmentPackages;
     }
 
     public void setOrigin(String origin) {
@@ -64,8 +65,14 @@ public class Shipment {
         this.shippingSpeed = shippingSpeed;
     }
 
-    public void setPackages(List<Package> packages) {
-        this.packages = packages;
+    public void addToPackages(Package pack) {
+        shipmentPackages.add(pack);
+    }
+
+    public void displayPackages() {
+        for (Package pack : shipmentPackages) {
+            System.out.println(pack);
+        }
     }
 
     // Method to generate tracking number
@@ -117,7 +124,7 @@ public class Shipment {
     // Method to calculate surcharge
     private double calculateSurcharge() {
         double surcharge = 0;
-        for (Package pkg : packages) {
+        for (Package pkg : shipmentPackages) {
             if (pkg.getHeight() > shippingMethod.getMaxAllowableDimension() || pkg.getLength() > shippingMethod.getMaxAllowableDimension() ||
                     pkg.getWidth() > shippingMethod.getMaxAllowableDimension() || pkg.getWeight() > shippingMethod.getMaxWeight()) {
                 surcharge += 10.0;
