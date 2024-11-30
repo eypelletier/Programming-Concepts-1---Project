@@ -114,7 +114,7 @@ public class Shipment {
         return 45.0;
     }
 
-    //Method to calculate surcharge
+    // Method to calculate surcharge
     private double calculateSurcharge() {
         double surcharge = 0;
         for (Package pkg : packages) {
@@ -124,10 +124,7 @@ public class Shipment {
             }
         }
 
-        // Additional surcharge for shipping shippingSpeed
-        if (shippingSpeed == DeliveryStandard.EXPRESS) {
-            surcharge += 5.0;
-        }
+        surcharge += shippingSpeed.getSurcharge();
 
         return surcharge;
     }
