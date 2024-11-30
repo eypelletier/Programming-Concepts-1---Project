@@ -1,3 +1,5 @@
+import helpers.OptionMenu;
+
 import java.util.Scanner;
 
 public class ShippingCalculator {
@@ -30,15 +32,26 @@ public class ShippingCalculator {
             double length = input.nextDouble();
             double weight = input.nextDouble();
 
+            //Create menu for type of goods
+            OptionMenu goodsTypeMenu = new OptionMenu();
+            goodsTypeMenu.addMenuOption("1", "Regular")
+                    .addMenuOption("2", "Fragile")
+                    .addMenuOption("3", "Hazardous")
+                    .addMenuOption("4", "Explosive");
+            System.out.printf("/---/\n%s\n",goodsTypeMenu.menuAsString(true));
+            /*
             System.out.println("""
                     Select type of goods:
                     1. Regular
                     2. Fragile
                     3. Hazardous
                     4. Explosive""");
-            String goodsClassification = input.nextLine();
+            */
 
-            Package pkg = new Package(label, height, width, length, weight, goodsClassification);
+            String goodsClassification = input.nextLine();
+            goodsTypeMenu.isValidOption(goodsClassification);
+            GoodsCategory = new GoodsCategory();
+            //Package pkg = new Package(label, height, width, length, weight, goodsClassification);
 
 
         }
