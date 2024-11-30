@@ -38,6 +38,7 @@ public class Package {
 
     public Package setLabel(String label){
         this.label = label;
+        return this;
     }
 
     public Package setGoodsClassification(GoodsCategory category){
