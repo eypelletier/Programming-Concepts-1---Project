@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.ArrayList;
 
 public class Shipment {
+    private String name;
     private String origin;
     private String destination;
     private DeliveryModality shippingMethod;
@@ -22,11 +23,16 @@ public class Shipment {
     private static final int VANCOUVER_CODE = 23;
 
     public Shipment() {
+        this.name = null;
         this.origin = "N/A";
         this.destination = "N/A";
         this.shippingMethod = null;
         this.shippingSpeed = null;
         shipmentPackages = new ArrayList<>();
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getOrigin() {
@@ -47,6 +53,10 @@ public class Shipment {
 
     public ArrayList<Package> getPackages() {
         return shipmentPackages;
+    }
+
+    public void setName(String Name) {
+        this.name = Name;
     }
 
     public void setOrigin(String origin) {

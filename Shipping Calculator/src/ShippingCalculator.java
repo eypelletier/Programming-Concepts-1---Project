@@ -21,6 +21,7 @@ public class ShippingCalculator {
         Shipment ship = new Shipment();
         System.out.print("Please enter a label for the shipment: ");
         String shipLabel = input.nextLine();
+        ship.setName(shipLabel);
 
         System.out.print("How many packages would you like to ship: ");
         int numPackages = input.nextInt();
