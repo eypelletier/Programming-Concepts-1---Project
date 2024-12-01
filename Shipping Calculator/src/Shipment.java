@@ -159,7 +159,7 @@ public class Shipment {
                 problems.add(PackageProblems.TOO_HEAVY_FOR_MODALITY);
             }
 
-            if (! shippingMethod.canTransportGoodsCategory(pkg.getGoodsClassification())){
+            if (!shippingMethod.canTransportGoodsCategory(pkg.getGoodsClassification())){
                 problems.add(PackageProblems.GOODS_RESTRICTED_FOR_MODALITY);
             }
 
