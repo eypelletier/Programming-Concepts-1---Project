@@ -6,26 +6,16 @@ import java.util.ArrayList;
 
 public class Shipment {
     private String name;
-    private String origin;
-    private String destination;
+    private City origin;
+    private City destination;
     private DeliveryModality shippingMethod;
     private DeliveryStandard shippingSpeed;
     private ArrayList<Package> shipmentPackages;
 
-    // Constants for origin and destination location codes
-    public static final String MONTREAL = "Montreal";
-    public static final String TORONTO = "Toronto";
-    public static final String VANCOUVER = "Vancouver";
-
-    // Maps for location codes to numbers
-    private static final int MONTREAL_CODE = 21;
-    private static final int TORONTO_CODE = 22;
-    private static final int VANCOUVER_CODE = 23;
-
     public Shipment() {
         this.name = null;
-        this.origin = "N/A";
-        this.destination = "N/A";
+        this.origin = null;
+        this.destination = null;
         this.shippingMethod = null;
         this.shippingSpeed = null;
         shipmentPackages = new ArrayList<>();
@@ -35,12 +25,16 @@ public class Shipment {
         return name;
     }
 
-    public String getOrigin() {
+    public City getOrigin() {
         return origin;
     }
 
-    public String getDestination() {
+    public City getDestination() {
         return destination;
+    }
+
+    public int getCityPairCode(){
+        return origin.getPairCode(destination);
     }
 
     public DeliveryModality getShippingMethod() {
@@ -59,11 +53,11 @@ public class Shipment {
         this.name = Name;
     }
 
-    public void setOrigin(String origin) {
+    public void setOrigin(City origin) {
         this.origin = origin;
     }
 
-    public void setDestination(String destination) {
+    public void setDestination(City destination) {
         this.destination = destination;
     }
 
@@ -93,25 +87,11 @@ public class Shipment {
         Random rand = new Random();
 
         // Get origin and destination location codes
-        int originCode = getLocationCode(origin);
-        int destinationCode = getLocationCode(destination);
+        String originCode = origin.getTrackingCode();
+        String destinationCode = destination.getTrackingCode();
 
         // Generate the tracking number using the current date and the location codes
         return "TRK" + date + originCode + destinationCode + rand.nextInt(100);
-    }
-
-    // Method to get codes for origin and destination
-    private int getLocationCode(String location) {
-        switch (location) {
-            case MONTREAL:
-                return MONTREAL_CODE;
-            case TORONTO:
-                return TORONTO_CODE;
-            case VANCOUVER:
-                return VANCOUVER_CODE;
-            default:
-                throw new IllegalArgumentException("Invalid location: " + location);
-        }
     }
 
     // Method to calculate shipping cost
@@ -123,9 +103,12 @@ public class Shipment {
 
     // Method to calculate the base rate of the shipment
     private double calculateBaseRate() {
-        if (origin.equals("Montreal") && destination.equals("Toronto") || origin.equals("Toronto") && destination.equals("Montreal")) {
+        int montrealTorontoPairCode = City.MONTREAL.getPairCode(City.TORONTO);
+        int montrealVancouverPairCode = City.MONTREAL.getPairCode(City.VANCOUVER);
+
+        if (getCityPairCode() == montrealTorontoPairCode) {
             return 10.0;
-        } else if (origin.equals("Montreal") && destination.equals("Vancouver") || origin.equals("Vancouver") && destination.equals("Montreal")) {
+        } else if (getCityPairCode() == montrealVancouverPairCode) {
             return 60.0;
         }
         return 45.0;
