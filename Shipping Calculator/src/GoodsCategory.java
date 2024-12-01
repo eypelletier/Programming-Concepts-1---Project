@@ -1,5 +1,3 @@
-//Rewrite as ENUM
-
 public enum GoodsCategory {
     REGULAR(1,"Regular",0),
     FRAGILE(2,"Fragile",10),
