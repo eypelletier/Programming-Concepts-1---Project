@@ -1,31 +1,34 @@
-import java.util.ArrayList;
+//Rewrite as ENUM
 
-public class GoodsCategory {
-    private String name;
-    private double surchargeRate;
+public enum GoodsCategory {
+    REGULAR(1,"Regular",0),
+    FRAGILE(2,"Fragile",10),
+    HAZARDOUS(3,"Hazardous", 100),
+    EXPLOSIVE(4,"Explosive", 1000);
 
-    //Pre-configured categories
-    public static final GoodsCategory REGULAR = new GoodsCategory("Regular",0);
-    public static final GoodsCategory FRAGILE = new GoodsCategory("Fragile",10);
-    public static final GoodsCategory HAZARDOUS = new GoodsCategory("Hazardous",100);
-    public static final GoodsCategory EXPLOSIVE = new GoodsCategory("Explosive",1000);
+    private final String name;
+    private final double surchargeRate;
+    private final int identifier;
 
-    public GoodsCategory(GoodsCategory anotherObject) {
-       this.name = anotherObject.getName();
-       this.surchargeRate = anotherObject.getSurchargeRate();
-    }
-
-    public GoodsCategory(String name, double surchargeRate) {
+    GoodsCategory(int identifier,String name, double surchargeRate) {
         this.name = name;
         this.surchargeRate = surchargeRate;
+        this.identifier = identifier;
     }
 
-    public GoodsCategory setSurchargeRate(double rate){this.surchargeRate = rate; return this;}
-    public GoodsCategory setName(String name){this.name = name; return this; }
+    public double getSurchargeRate() {
+        return surchargeRate;
+    }
 
-    public double getSurchargeRate(){return this.surchargeRate;}
-    public String getName() {return this.name;}
+    public String getName() {
+        return name;
+    }
 
+    public int getIdentifier() {
+        return identifier;
+    }
+
+    @Override
     public String toString() {
         return this.name;
     }
