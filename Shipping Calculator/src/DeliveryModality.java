@@ -4,6 +4,7 @@ public class DeliveryModality {
     private String name;
     private double maxAllowableDimension;
     private double maxWeight;
+    private double surcharge;
     private ArrayList<GoodsCategory> goodsRestrictions;
 
     public static final DeliveryModality TRUCK = CreateModality("Truck");
@@ -29,6 +30,7 @@ public class DeliveryModality {
                 newModality = new DeliveryModality("Air",200,100);
                 newModality.goodsRestrictions.add(GoodsCategory.HAZARDOUS);
                 newModality.goodsRestrictions.add(GoodsCategory.EXPLOSIVE);
+                newModality.surcharge = 50;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid modality type");
@@ -43,12 +45,14 @@ public class DeliveryModality {
         this.name = name;
         this.maxAllowableDimension = maxAllowableDimension;
         this.maxWeight = maxWeight;
+        this.surcharge = 0.0;
         this.goodsRestrictions = new ArrayList<>();
     }
 
     public String getName(){ return this.name; }
     public double getMaxAllowableDimension() { return maxAllowableDimension; }
     public double getMaxWeight() { return maxWeight; }
+    public double getSurcharge() { return surcharge; }
 
     public void setName(String name){ this.name = name; }
     public void setMaxAllowableDimension(double dimension) { this.maxAllowableDimension = dimension; }
