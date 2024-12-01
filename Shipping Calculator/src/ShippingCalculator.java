@@ -247,10 +247,10 @@ public class ShippingCalculator {
 
     public static void displayShipmentCost(Shipment ship) {
         System.out.println("\n--- Shipment Cost ---");
-        System.out.println("Base Shipping Rate: " + ship.calculateBaseRate());
-        System.out.println("Shipment Weight Surcharge: " + ship.totalWeightSurcharge());
-        System.out.println("Shipment Method Surcharge: " + ship.deliveryModalitySurcharge());
-        System.out.println("Shipment Priority Surcharge:  " +ship.deliveryStandardSurcharge());
+        System.out.println("Base Shipping Rate: " + ship.getBaseRate());
+        System.out.println("Shipment Weight Surcharge: " + ship.getWeightSurcharge());
+        System.out.println("Shipment Method Surcharge: " + ship.getModalitySurcharge());
+        System.out.println("Shipment Priority Surcharge:  " + ship.getPrioritySurcharge());
         System.out.println("-------------------");
         System.out.println("Total cost for shipment: " + ship.calculateShippingCost());
 

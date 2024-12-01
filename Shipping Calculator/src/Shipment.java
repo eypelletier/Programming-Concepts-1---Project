@@ -198,4 +198,10 @@ public class Shipment {
         return shippingMethod.getSurcharge();
     }
 
+    //Get BaseRate
+    public double getBaseRate() {
+        double baseRate = calculateBaseRate();
+        return baseRate;
+    }
+
 }
