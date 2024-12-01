@@ -46,9 +46,10 @@ public class Package {
         return this;
     }
 
-    public double getHeight(){ return this.height; }
-    public double getWidth(){ return this.width; }
     public double getLength(){ return this.length; }
+    public double getWidth(){ return this.width; }
+    public double getHeight(){ return this.height; }
+
     public double getWeight(){ return this.weight; }
     public String getLabel(){ return this.label; }
 
@@ -67,4 +68,11 @@ public class Package {
         return largestDimension;
     }
 
+    public boolean meetsDimensions(double length, double width, double height){
+        return (this.length <= length) && (this.width <= width) && (this.height <= height);
+    }
+
+    public boolean meetsWeight(double weight){
+        return (this.weight <= weight);
+    }
 }
