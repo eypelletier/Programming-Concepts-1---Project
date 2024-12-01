@@ -70,6 +70,7 @@ public class DeliveryModality {
         return !(goodsRestrictions.contains(goodsCategory));
     }
 
+    @Override
     public String toString(){
         return this.name;
     }
