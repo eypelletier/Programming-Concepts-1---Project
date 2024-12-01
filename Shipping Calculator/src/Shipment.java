@@ -1,8 +1,5 @@
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.ArrayList;
 
 public class Shipment {
     private String name;
@@ -10,7 +7,15 @@ public class Shipment {
     private City destination;
     private DeliveryModality shippingMethod;
     private DeliveryStandard shippingSpeed;
-    private ArrayList<Package> shipmentPackages;
+    private final ArrayList<Package> shipmentPackages;
+
+    public enum PackageProblems {
+        TOO_HEAVY_FOR_MODALITY,
+        TOO_HEAVY_FOR_STANDARD,
+        TOO_LARGE_FOR_MODALITY,
+        TOO_LARGE_FOR_STANDARD,
+        GOODS_RESTRICTED_FOR_MODALITY,
+    }
 
     public Shipment() {
         this.name = null;
@@ -118,8 +123,7 @@ public class Shipment {
     private double calculateSurcharge() {
         double surcharge = 0;
         for (Package pkg : shipmentPackages) {
-            if (pkg.getHeight() > shippingMethod.getMaxAllowableDimension() || pkg.getLength() > shippingMethod.getMaxAllowableDimension() ||
-                    pkg.getWidth() > shippingMethod.getMaxAllowableDimension() || pkg.getWeight() > shippingMethod.getMaxWeight()) {
+            if (pkg.getLargestDimension() > shippingMethod.getMaxAllowableDimension() ) {
                 surcharge += 10.0;
             }
         }
@@ -128,4 +132,70 @@ public class Shipment {
 
         return surcharge;
     }
+
+    //Method to return any problematic packages according to constraints of DeliveryStandard and/or DeliveryModality
+    public Map<Package, EnumSet<PackageProblems>> getRejectedPackages(){
+        Map<Package, EnumSet<PackageProblems>> packagesRejected = new HashMap<>();
+        int packageCount = shipmentPackages.size();
+        for (int packageIndex = 0; packageIndex < packageCount; packageIndex++) {
+            Package pkg = shipmentPackages.get(packageIndex);
+            EnumSet<PackageProblems> problems = EnumSet.noneOf(PackageProblems.class);
+
+            //Check for problems related to DeliveryStandard
+            if (!shippingSpeed.meetsDimensions(pkg.getLength(), pkg.getWidth(), pkg.getHeight())) {
+                problems.add(PackageProblems.TOO_LARGE_FOR_STANDARD);
+            }
+
+            if (!shippingSpeed.meetsWeight(pkg.getWeight())) {
+                problems.add(PackageProblems.TOO_HEAVY_FOR_STANDARD);
+            }
+
+            //Check for problems related to DeliveryModality
+            if (pkg.getLargestDimension() > shippingMethod.getMaxAllowableDimension()) {
+                problems.add(PackageProblems.TOO_LARGE_FOR_MODALITY);
+            }
+
+            if (pkg.getWeight() > shippingMethod.getMaxWeight()){
+                problems.add(PackageProblems.TOO_HEAVY_FOR_MODALITY);
+            }
+
+            if (! shippingMethod.canTransportGoodsCategory(pkg.getGoodsClassification())){
+                problems.add(PackageProblems.GOODS_RESTRICTED_FOR_MODALITY);
+            }
+
+            if (!problems.isEmpty()){
+                packagesRejected.put(pkg, problems);
+            }
+        }
+
+        return packagesRejected;
+    }
+
+    //Method to get the total weight of the shipment
+    public double getTotalWeight(){
+        double totalWeight = 0.0;
+        for (Package pkg : shipmentPackages) {
+            totalWeight += pkg.getWeight();
+        }
+        return totalWeight;
+    }
+
+    //Get Weight Surcharge
+    public double getWeightSurcharge(){
+        double totalWeight = getTotalWeight();
+        double totalSurchage = 0.0;
+        if ( totalWeight > shippingMethod.getMaxWeight() ) totalSurchage+=10;
+        if ( totalWeight > shippingSpeed.getMaxWeight() ) totalSurchage+=50;
+        return totalSurchage;
+    }
+    //Get Surcharge for Priority
+    public double getPrioritySurcharge(){
+        return shippingSpeed.getSurcharge();
+    }
+
+    //Get Surcharge for Method
+    public double getModalitySurcharge(){
+        return shippingMethod.getSurcharge();
+    }
+
 }
