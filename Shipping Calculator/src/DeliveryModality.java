@@ -4,6 +4,7 @@ public class DeliveryModality {
     private String name;
     private double maxAllowableDimension;
     private double maxWeight;
+    private double surcharge;
     private ArrayList<GoodsCategory> goodsRestrictions;
 
     public static final DeliveryModality TRUCK = CreateModality("Truck");
@@ -17,18 +18,22 @@ public class DeliveryModality {
             case "truck":
                 newModality = new DeliveryModality("Truck",400,200);
                 newModality.goodsRestrictions.add(GoodsCategory.HAZARDOUS);
+                newModality.surcharge = 20;
                 break;
             case "rail":
                 newModality = new DeliveryModality("Rail",800,1000);
                 newModality.goodsRestrictions.add(GoodsCategory.EXPLOSIVE);
+                newModality.surcharge = 40;
                 break;
             case "sea":
                 newModality = new DeliveryModality("Sea",800,2000);
+                newModality.surcharge = 30;
                 break;
             case "air":
                 newModality = new DeliveryModality("Air",200,100);
                 newModality.goodsRestrictions.add(GoodsCategory.HAZARDOUS);
                 newModality.goodsRestrictions.add(GoodsCategory.EXPLOSIVE);
+                newModality.surcharge = 100;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid modality type");
@@ -61,6 +66,10 @@ public class DeliveryModality {
 
     public boolean canTransportGoodsCategory(GoodsCategory goodsCategory){
         return !(goodsRestrictions.contains(goodsCategory));
+    }
+
+    public double getSurcharge() {
+        return surcharge;
     }
 
     public String toString(){

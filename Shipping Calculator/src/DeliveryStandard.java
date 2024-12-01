@@ -16,6 +16,7 @@ public class DeliveryStandard {
             switch (type.toLowerCase()){
                 case "standard":
                     newStandard = new DeliveryStandard(100, 200, 150, 1000);
+                    newStandard.surcharge = 0;
                     break;
                 case "express":
                     newStandard = new DeliveryStandard(50, 150, 100, 500);

@@ -20,6 +20,7 @@ public class ShippingCalculator {
             Shipment ship = createShipment(new Shipment());
             // ship = createShipment(ship);
             displayShipmentSummary(ship);
+            displayShipmentCost(ship);
         } else {
             System.exit(0);
         }
@@ -240,8 +241,18 @@ public class ShippingCalculator {
             System.out.println("Weight: " + pkg.getWeight() + " kg");
             System.out.println("-------------------");
         }
-
         //TODO Generate and store the tracking number for the shipment.
         System.out.println("Tracking number: TRK1234567890");
+    }
+
+    public static void displayShipmentCost(Shipment ship) {
+        System.out.println("\n--- Shipment Cost ---");
+        System.out.println("Base Shipping Rate: " + ship.calculateBaseRate());
+        System.out.println("Shipment Weight Surcharge: " + ship.totalWeightSurcharge());
+        System.out.println("Shipment Method Surcharge: " + ship.deliveryModalitySurcharge());
+        System.out.println("Shipment Priority Surcharge:  " +ship.deliveryStandardSurcharge());
+        System.out.println("-------------------");
+        System.out.println("Total cost for shipment: " + ship.calculateShippingCost());
+
     }
 }
