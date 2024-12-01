@@ -3,9 +3,9 @@ public enum City {
     TORONTO(2, "Toronto","TOR"),
     VANCOUVER(4, "Vancouver","VAN");
 
-    private int cityCode;
-    private String cityName;
-    private String cityTrackingCode;
+    private final int cityCode;
+    private final String cityName;
+    private final String cityTrackingCode;
 
     City(int cityCode, String cityName, String trackingCode) {
         this.cityCode = cityCode;
