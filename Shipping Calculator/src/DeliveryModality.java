@@ -6,27 +6,27 @@ public class DeliveryModality {
     private double maxWeight;
     private ArrayList<GoodsCategory> goodsRestrictions;
 
-    public static final DeliveryModality TRUCK = CreateModality("truck");
-    public static final DeliveryModality RAIL = CreateModality("rail");
-    public static final DeliveryModality SEA = CreateModality("sea");
-    public static final DeliveryModality AIR = CreateModality("air");
+    public static final DeliveryModality TRUCK = CreateModality("Truck");
+    public static final DeliveryModality RAIL = CreateModality("Rail");
+    public static final DeliveryModality SEA = CreateModality("Sea");
+    public static final DeliveryModality AIR = CreateModality("Air");
 
     private static DeliveryModality CreateModality(String type){
         DeliveryModality newModality = null;
-        switch (type){
+        switch (type.toLowerCase()){
             case "truck":
-                newModality = new DeliveryModality("truck",400,200);
+                newModality = new DeliveryModality("Truck",400,200);
                 newModality.goodsRestrictions.add(GoodsCategory.HAZARDOUS);
                 break;
             case "rail":
-                newModality = new DeliveryModality("rail",800,1000);
+                newModality = new DeliveryModality("Rail",800,1000);
                 newModality.goodsRestrictions.add(GoodsCategory.EXPLOSIVE);
                 break;
             case "sea":
-                newModality = new DeliveryModality("sea",800,2000);
+                newModality = new DeliveryModality("Sea",800,2000);
                 break;
             case "air":
-                newModality = new DeliveryModality("air",200,100);
+                newModality = new DeliveryModality("Air",200,100);
                 newModality.goodsRestrictions.add(GoodsCategory.HAZARDOUS);
                 newModality.goodsRestrictions.add(GoodsCategory.EXPLOSIVE);
                 break;
@@ -61,5 +61,9 @@ public class DeliveryModality {
 
     public boolean canTransportGoodsCategory(GoodsCategory goodsCategory){
         return !(goodsRestrictions.contains(goodsCategory));
+    }
+
+    public String toString(){
+        return this.name;
     }
 }

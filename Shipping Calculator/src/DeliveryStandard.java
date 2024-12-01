@@ -8,12 +8,12 @@ public class DeliveryStandard {
     private final double maxWeight;
     private double surcharge;
 
-    public static final DeliveryStandard STANDARD = CreateStandard("standard");
-    public static final DeliveryStandard EXPRESS = CreateStandard("express");
+    public static final DeliveryStandard STANDARD = CreateStandard("Standard");
+    public static final DeliveryStandard EXPRESS = CreateStandard("Express");
 
     private static DeliveryStandard CreateStandard(String type){
             DeliveryStandard newStandard = null;
-            switch (type){
+            switch (type.toLowerCase()){
                 case "standard":
                     newStandard = new DeliveryStandard(100, 200, 150, 1000);
                     break;
@@ -65,6 +65,8 @@ public class DeliveryStandard {
         return surcharge;
     }
 
-
+    public String toString(){
+        return this.type;
+    }
 
 }

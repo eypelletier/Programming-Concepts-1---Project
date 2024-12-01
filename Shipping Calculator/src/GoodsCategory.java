@@ -5,10 +5,10 @@ public class GoodsCategory {
     private double surchargeRate;
 
     //Pre-configured categories
-    public static final GoodsCategory REGULAR = new GoodsCategory("regular",0);
-    public static final GoodsCategory FRAGILE = new GoodsCategory("fragile",10);
-    public static final GoodsCategory HAZARDOUS = new GoodsCategory("hazardous",100);
-    public static final GoodsCategory EXPLOSIVE = new GoodsCategory("explosive",1000);
+    public static final GoodsCategory REGULAR = new GoodsCategory("Regular",0);
+    public static final GoodsCategory FRAGILE = new GoodsCategory("Fragile",10);
+    public static final GoodsCategory HAZARDOUS = new GoodsCategory("Hazardous",100);
+    public static final GoodsCategory EXPLOSIVE = new GoodsCategory("Explosive",1000);
 
     public GoodsCategory(GoodsCategory anotherObject) {
        this.name = anotherObject.getName();
@@ -25,4 +25,8 @@ public class GoodsCategory {
 
     public double getSurchargeRate(){return this.surchargeRate;}
     public String getName() {return this.name;}
+
+    public String toString() {
+        return this.name;
+    }
 }

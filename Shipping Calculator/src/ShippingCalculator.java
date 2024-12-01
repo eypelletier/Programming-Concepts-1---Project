@@ -17,13 +17,14 @@ public class ShippingCalculator {
         startMenu.isValidOption(menuChoice);
 
         if (menuChoice.equals("1")) {
-            Shipment ship = new Shipment();
-            ship = createShipment(ship);
+            Shipment ship = createShipment(new Shipment());
+            // ship = createShipment(ship);
+            displayShipmentSummary(ship);
         } else {
             System.exit(0);
         }
-
     }
+
     public static Shipment createShipment(Shipment ship) {
         Scanner keyboard = new Scanner(System.in);
         System.out.print("Please enter a label for the shipment: ");
@@ -136,13 +137,13 @@ public class ShippingCalculator {
         originMenu.isValidOption(originMenuChoice);
         switch (originMenuChoice){
             case "1":
-                ship.setOrigin("Montreal");
+                ship.setOrigin(City.MONTREAL);
                 break;
             case "2":
-                ship.setOrigin("Toronto");
+                ship.setOrigin(City.TORONTO);
                 break;
             case "3":
-                ship.setOrigin("Vancouver");
+                ship.setOrigin(City.VANCOUVER);
                 break;
         }
     }
@@ -160,13 +161,13 @@ public class ShippingCalculator {
         destinationMenu.isValidOption(destinationMenuChoice);
         switch (destinationMenuChoice){
             case "1":
-                ship.setDestination("Montreal");
+                ship.setDestination(City.MONTREAL);
                 break;
             case "2":
-                ship.setDestination("Toronto");
+                ship.setDestination(City.TORONTO);
                 break;
             case "3":
-                ship.setDestination("Vancouver");
+                ship.setDestination(City.VANCOUVER);
                 break;
         }
     }
@@ -219,5 +220,28 @@ public class ShippingCalculator {
                 ship.setShippingSpeed(DeliveryStandard.EXPRESS);
                 break;
         }
+    }
+
+    public static void displayShipmentSummary(Shipment ship) {
+        // Display shipment summary
+        System.out.println("\n--- Shipment Summary ---");
+        System.out.println("Shipment Label: " + ship.getName());
+        System.out.println("Origin: " + ship.getOrigin());
+        System.out.println("Destination: " + ship.getDestination());
+        System.out.println("Shipping Method: " + ship.getShippingMethod());
+        System.out.println("Shipping Speed: " + ship.getShippingSpeed());
+
+        // Display package information
+        System.out.println("\n--- Packages ---");
+        for (Package pkg : ship.getPackages()) {
+            System.out.println("Package Label: " + pkg.getLabel());
+            System.out.println("Goods Category: " + pkg.getGoodsClassification());
+            System.out.println("Dimensions (HxWxL): " + pkg.getHeight() + " x " + pkg.getWidth() + " x " + pkg.getLength() + " cm");
+            System.out.println("Weight: " + pkg.getWeight() + " kg");
+            System.out.println("-------------------");
+        }
+
+        //TODO Generate and store the tracking number for the shipment.
+        System.out.println("Tracking number: TRK1234567890");
     }
 }
