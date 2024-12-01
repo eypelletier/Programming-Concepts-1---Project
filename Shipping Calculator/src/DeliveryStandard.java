@@ -66,8 +66,16 @@ public class DeliveryStandard {
         return surcharge;
     }
 
+    @Override
     public String toString(){
         return this.type;
     }
 
+    public boolean meetsDimensions(double length, double width, double height){
+        return (length <= this.maxLength) && (width <= this.maxWidth) && (height <= this.maxHeight);
+    }
+
+    public boolean meetsWeight(double weight){
+        return (weight <= this.maxWeight);
+    }
 }
