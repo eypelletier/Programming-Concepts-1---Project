@@ -1,87 +1,138 @@
 import helpers.OptionMenu;
 
-import javax.swing.*;
 import java.util.Scanner;
 
 public class ShippingCalculator {
     public static void main(String[] args) {
-
-        Scanner input = new Scanner(System.in);
-
+        Scanner keyboard = new Scanner(System.in);
         System.out.println("Welcome to SuperShipper - Steam Early Release - pre-v0.1\n" +
                 "We will assist with calculating the cost of your shipment.");
 
         OptionMenu startMenu = new OptionMenu();
-        startMenu.addMenuOption("1", "Create a new shipment")
-                .addMenuOption("2", "Quit");
-        System.out.printf("/---/\n%s\n",startMenu.menuAsString(true));
-        String menuChoice = input.nextLine();
+        String[][] menuOptions = {{"1","Create New Shipment"},{"2","Quit"}};
+        startMenu.addAllMenuOptions(menuOptions);
+
+        System.out.printf("\n%s\n", startMenu.withTitle("Main Menu").withDefault("1").menuAsString());
+        String menuChoice = startMenu.promptForChoice();
         startMenu.isValidOption(menuChoice);
 
-        Shipment ship = new Shipment();
+        if (menuChoice.equals("1")) {
+            Shipment ship = new Shipment();
+            ship = createShipment(ship);
+        } else {
+            System.exit(0);
+        }
+
+    }
+    public static Shipment createShipment(Shipment ship) {
+        Scanner keyboard = new Scanner(System.in);
         System.out.print("Please enter a label for the shipment: ");
-        String shipLabel = input.nextLine();
+        String shipLabel = keyboard.nextLine();
         ship.setName(shipLabel);
 
         System.out.print("How many packages would you like to ship: ");
-        int numPackages = input.nextInt();
-        input.nextLine();
+        int numPackages = keyboard.nextInt();
+        keyboard.nextLine();
 
         for (int i = 0; i < numPackages; i++) {
-            Package pkg = new Package();
-
-            System.out.println("Package" + (i + 1) + ": ");
-            System.out.print("Enter package label:");
-            String pkgLabel = input.nextLine();
-            pkg.setLabel(pkgLabel);
-
-            System.out.print("Enter package dimensions (Height x Width x Length in cm and Weight in kg):");
-            double pkgHeight = input.nextDouble();
-            double pkgWidth = input.nextDouble();
-            double pkgLength = input.nextDouble();
-            double pkgWeight = input.nextDouble();
-            input.nextLine();
-            pkg.setHeight(pkgHeight);
-            pkg.setLength(pkgLength);
-            pkg.setWidth(pkgWidth);
-            pkg.setWeight(pkgWeight);
-
-            //Create menu for type of goods
-            GoodsCategory goodsCategory = null;
-            OptionMenu goodsTypeMenu = new OptionMenu();
-            goodsTypeMenu.addMenuOption("1", "Regular")
-                    .addMenuOption("2", "Fragile")
-                    .addMenuOption("3", "Hazardous")
-                    .addMenuOption("4", "Explosive");
-            System.out.printf("/---/\n%s\n",goodsTypeMenu.menuAsString(true));
-            String pkgGoodsClassification = input.nextLine();
-            goodsTypeMenu.isValidOption(pkgGoodsClassification);
-            switch (pkgGoodsClassification){
-                case "1":
-                    goodsCategory = GoodsCategory.REGULAR;
-                    break;
-                case "2":
-                    goodsCategory = GoodsCategory.FRAGILE;
-                    break;
-                case "3":
-                    goodsCategory = GoodsCategory.HAZARDOUS;
-                    break;
-                case "4":
-                    goodsCategory = GoodsCategory.EXPLOSIVE;
-                    break;
-            }
-            pkg.setGoodsClassification(goodsCategory);
-
-            ship.addToPackages(pkg);
+            System.out.println("---- Package #" + (i + 1) + " ----");
+            Package newPackage = createPackage();
+            ship.addToPackages(newPackage);
         }
 
+        configureShipment(ship);
+        return ship;
+    }
+    public static Package createPackage(){
+        Package pkg = new Package();
+        configurePackage(pkg);
+        return pkg;
+    }
+
+    public static void configurePackage(Package pkg){
+        assignPackageLabel(pkg);
+        assignPackageDimensions(pkg);
+        assignPackageWeight(pkg);
+        assignPackageGoodsCategory(pkg);
+    }
+
+    public static void assignPackageLabel(Package pkg){
+        Scanner keyboard = new Scanner(System.in);
+
+        System.out.print("Enter package label: ");
+        String pkgLabel = keyboard.nextLine();
+        pkg.setLabel(pkgLabel);
+    }
+
+    public static void assignPackageDimensions(Package pkg){
+        Scanner keyboard = new Scanner(System.in);
+        System.out.print("Enter package dimensions (Height x Width x Length in cm): ");
+        double pkgHeight = keyboard.nextDouble();
+        double pkgWidth = keyboard.nextDouble();
+        double pkgLength = keyboard.nextDouble();
+
+        pkg.setHeight(pkgHeight);
+        pkg.setLength(pkgLength);
+        pkg.setWidth(pkgWidth);
+    }
+
+    public static void assignPackageWeight(Package pkg){
+        Scanner keyboard = new Scanner(System.in);
+        System.out.print("Enter package weight (in kg): ");
+        double pkgWeight = keyboard.nextDouble();
+
+        pkg.setWeight(pkgWeight);
+    }
+
+    public static void assignPackageGoodsCategory(Package pkg){
+        Scanner keyboard = new Scanner(System.in);
+
+        //Create menu for type of goods
+        OptionMenu goodsTypeMenu = new OptionMenu();
+        goodsTypeMenu.addMenuOption("1", "Regular")
+                .addMenuOption("2", "Fragile")
+                .addMenuOption("3", "Hazardous")
+                .addMenuOption("4", "Explosive");
+
+        System.out.println("Select a goods category From the following options");
+        System.out.printf("\n%s\n",goodsTypeMenu.menuAsString(true));
+        System.out.print("Choice: ");
+        String pkgGoodsClassification = keyboard.nextLine();
+        goodsTypeMenu.isValidOption(pkgGoodsClassification);
+
+        switch (pkgGoodsClassification){
+            case "1":
+                pkg.setGoodsClassification(GoodsCategory.REGULAR);
+                break;
+            case "2":
+                pkg.setGoodsClassification(GoodsCategory.FRAGILE);
+                break;
+            case "3":
+                pkg.setGoodsClassification(GoodsCategory.HAZARDOUS);
+                break;
+            case "4":
+                pkg.setGoodsClassification(GoodsCategory.EXPLOSIVE);
+                break;
+        }
+    }
+
+    public static void configureShipment(Shipment ship){
+        assignShipmentOrigin(ship);
+        assignShipmentDestination(ship);
+        assignShipmentModality(ship);
+        assignShipmentPriority(ship);
+    }
+
+    public static void assignShipmentOrigin(Shipment ship){
+        Scanner keyboard = new Scanner(System.in);
         System.out.println("Please select the origin of the shipment:");
         OptionMenu originMenu = new OptionMenu();
         originMenu.addMenuOption("1", "Montreal")
                 .addMenuOption("2", "Toronto")
                 .addMenuOption("3", "Vancouver");
-        System.out.printf("/---/\n%s\n",originMenu.menuAsString(true));
-        String originMenuChoice = input.nextLine();
+        System.out.printf("\n%s\n",originMenu.menuAsString(true));
+        System.out.print("Choice: ");
+        String originMenuChoice = keyboard.nextLine();
         originMenu.isValidOption(originMenuChoice);
         switch (originMenuChoice){
             case "1":
@@ -94,14 +145,18 @@ public class ShippingCalculator {
                 ship.setOrigin("Vancouver");
                 break;
         }
+    }
 
+    public static void assignShipmentDestination(Shipment ship){
+        Scanner keyboard = new Scanner(System.in);
         System.out.println("Please select the destination for the shipment:");
         OptionMenu destinationMenu = new OptionMenu();
         destinationMenu.addMenuOption("1", "Montreal")
                 .addMenuOption("2", "Toronto")
                 .addMenuOption("3", "Vancouver");
-        System.out.printf("/---/\n%s\n",destinationMenu.menuAsString(true));
-        String destinationMenuChoice = input.nextLine();
+        System.out.printf("\n%s\n",destinationMenu.menuAsString(true));
+        System.out.print("Choice: ");
+        String destinationMenuChoice = keyboard.nextLine();
         destinationMenu.isValidOption(destinationMenuChoice);
         switch (destinationMenuChoice){
             case "1":
@@ -114,50 +169,55 @@ public class ShippingCalculator {
                 ship.setDestination("Vancouver");
                 break;
         }
+    }
 
+    public static void assignShipmentModality(Shipment ship){
+        Scanner keyboard = new Scanner(System.in);
         System.out.println("Please select the method of transportation:");
-        DeliveryModality transportMethod = null;
+
         OptionMenu transportationMenu = new OptionMenu();
         transportationMenu.addMenuOption("1", "Truck")
                 .addMenuOption("2", "Rail")
                 .addMenuOption("3", "Sea")
                 .addMenuOption("4", "Air");
-        System.out.printf("/---/\n%s\n",transportationMenu.menuAsString(true));
-        String transportationMenuChoice = input.nextLine();
+
+        System.out.printf("\n%s\n",transportationMenu.menuAsString(true));
+        System.out.print("Choice: ");
+        String transportationMenuChoice = keyboard.nextLine();
         transportationMenu.isValidOption(transportationMenuChoice);
         switch (transportationMenuChoice){
             case "1":
-                transportMethod = DeliveryModality.TRUCK;
+                ship.setShippingMethod(DeliveryModality.TRUCK);
                 break;
             case "2":
-                transportMethod = DeliveryModality.RAIL;
+                ship.setShippingMethod(DeliveryModality.RAIL);
                 break;
             case "3":
-                transportMethod = DeliveryModality.SEA;
+                ship.setShippingMethod(DeliveryModality.SEA);
                 break;
             case "4":
-                transportMethod = DeliveryModality.AIR;
+                ship.setShippingMethod(DeliveryModality.AIR);
                 break;
         }
-        ship.setShippingMethod(transportMethod);
+    }
 
-
+    static public void assignShipmentPriority(Shipment ship){
+        Scanner keyboard = new Scanner(System.in);
         System.out.println("Please select a priority for the shipment:");
-        DeliveryStandard priority = null;
         OptionMenu priorityMenu = new OptionMenu();
         priorityMenu.addMenuOption("1", "Standard")
                 .addMenuOption("2", "Express");
-        System.out.printf("/---/\n%s\n",priorityMenu.menuAsString(true));
-        String priorityMenuChoice = input.nextLine();
+        System.out.printf("\n%s\n",priorityMenu.menuAsString(true));
+        System.out.print("Choice: ");
+        String priorityMenuChoice = keyboard.nextLine();
         priorityMenu.isValidOption(priorityMenuChoice);
         switch (priorityMenuChoice){
             case "1":
-                priority = DeliveryStandard.STANDARD;
+                ship.setShippingSpeed(DeliveryStandard.STANDARD);
                 break;
             case "2":
-                priority = DeliveryStandard.EXPRESS;
+                ship.setShippingSpeed(DeliveryStandard.EXPRESS);
                 break;
         }
-        ship.setShippingSpeed(priority);
     }
 }
