@@ -54,7 +54,7 @@ public class Package {
     public String getLabel(){ return this.label; }
 
     public GoodsCategory getGoodsClassification(){
-        return new GoodsCategory(this.goodsClassification);
+        return this.goodsClassification;
     }
 
     //Return the value of the largest dimension of the package
