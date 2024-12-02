@@ -1,11 +1,5 @@
 import helpers.OptionMenu;
-
-import java.util.EnumSet;
-import java.util.Map;
 import java.util.Scanner;
-
-//PackageBuilder
-//ShipmentBuilder
 
 public class ShippingCalculator {
     public static void main(String[] args) {
@@ -28,10 +22,10 @@ public class ShippingCalculator {
         }
     }
 
-    //Create Functionality for Retrieve+Update of a package...
-    //Create Functionality for Retrieve+Update of the shipment...
-    //Option to Delete Package
-    //Option to Delete Shipment (exit)
+    //TODO Create Functionality for Retrieve+Update of a package...
+    //TODO Create Functionality for Retrieve+Update of the shipment...
+    //TODO Option to Delete Package
+    //TODO Option to Delete Shipment (exit)
 
 
 }
