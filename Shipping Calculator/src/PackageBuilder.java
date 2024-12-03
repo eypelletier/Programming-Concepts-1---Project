@@ -56,33 +56,36 @@ public class PackageBuilder {
 
     public static void assignPackageDimensions(Package pkg){
         String userPromptStart = "Enter package dimensions ";
-        StringBuilder heightPrompt = new StringBuilder(userPromptStart);
-        StringBuilder widthPrompt = new StringBuilder(userPromptStart);
-        StringBuilder lengthPrompt = new StringBuilder(userPromptStart);
 
-        double pkgHeight = pkg.getHeight();
-        double pkgWidth = pkg.getWidth();
+        StringBuilder lengthPrompt = new StringBuilder(userPromptStart);
+        StringBuilder widthPrompt = new StringBuilder(userPromptStart);
+        StringBuilder heightPrompt = new StringBuilder(userPromptStart);
+
         double pkgLength = pkg.getLength();
+        double pkgWidth = pkg.getWidth();
+        double pkgHeight = pkg.getHeight();
+
+
 
         switch (PackageBuilder.mode) {
             case CREATE_MODE:
-                heightPrompt.append("(height in cm): ");
-                widthPrompt.append("(width in cm): ");
                 lengthPrompt.append("(length in cm): ");
+                widthPrompt.append("(width in cm): ");
+                heightPrompt.append("(height in cm): ");
                 break;
             case EDIT_MODE:
-                heightPrompt.append(String.format("(%s in cm) [%s]: ", "height", pkgHeight));
-                widthPrompt.append(String.format("(%s in cm) [%s]: ", "width", pkgWidth));
                 lengthPrompt.append(String.format("(%s in cm) [%s]: ", "length", pkgLength));
+                widthPrompt.append(String.format("(%s in cm) [%s]: ", "width", pkgWidth));
+                heightPrompt.append(String.format("(%s in cm) [%s]: ", "height", pkgHeight));
                 break;
         }
-        pkgHeight = retrievePackageDoubleInput(heightPrompt.toString(), pkgHeight);
-        pkgWidth = retrievePackageDoubleInput(widthPrompt.toString(), pkgWidth);
         pkgLength = retrievePackageDoubleInput(lengthPrompt.toString(), pkgLength);
+        pkgWidth = retrievePackageDoubleInput(widthPrompt.toString(), pkgWidth);
+        pkgHeight = retrievePackageDoubleInput(heightPrompt.toString(), pkgHeight);
 
-        pkg.setHeight(pkgHeight);
         pkg.setLength(pkgLength);
         pkg.setWidth(pkgWidth);
+        pkg.setHeight(pkgHeight);
     }
 
     private static double retrievePackageDoubleInput(String userPrompt, double defaultValue){
@@ -175,7 +178,6 @@ public class PackageBuilder {
             }
 
         }
-
 
     }
 
