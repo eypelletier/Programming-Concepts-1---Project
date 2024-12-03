@@ -128,11 +128,9 @@ public class PackageBuilder {
     }
 
     public static void assignPackageGoodsCategory(Package pkg){
-        Scanner keyboard = new Scanner(System.in);
-
         //Create menu for type of goods
         OptionMenu goodsTypeMenu = new OptionMenu();
-        String[][] menuOptions = {{"1", "Regular"},{"2", "Fragile"},{"3", "Hazardous"},{"4", "Explosive"}};
+        String[][] menuOptions = {{"1", "Regular","REG"},{"2", "Fragile","FRG"},{"3", "Hazardous","HAZ"},{"4", "Explosive","EXP"}};
         goodsTypeMenu.addAllMenuOptions(menuOptions);
         System.out.println("Select a goods category From the following options");
         System.out.printf("(%s)\n",goodsTypeMenu.menuAsString(true));
@@ -150,6 +148,12 @@ public class PackageBuilder {
                 break;
         }
 
+        promptForGoodsCategory(userPrompt.toString(),pkg,goodsTypeMenu);
+
+    }
+
+    private static void promptForGoodsCategory(String userPrompt, Package pkg, OptionMenu goodsTypeMenu){
+        Scanner keyboard = new Scanner(System.in);
         boolean validUserOption = false;
 
         while (!validUserOption) {
@@ -161,24 +165,19 @@ public class PackageBuilder {
             } else {
                 validUserOption = goodsTypeMenu.isValidOption(pkgGoodsClassification);
 
-                switch (pkgGoodsClassification){
-                    case "1":
-                        pkg.setGoodsClassification(GoodsCategory.REGULAR);
-                        break;
-                    case "2":
-                        pkg.setGoodsClassification(GoodsCategory.FRAGILE);
-                        break;
-                    case "3":
-                        pkg.setGoodsClassification(GoodsCategory.HAZARDOUS);
-                        break;
-                    case "4":
-                        pkg.setGoodsClassification(GoodsCategory.EXPLOSIVE);
-                        break;
+                if (validUserOption) {
+                    String strId = goodsTypeMenu.getDataValueForOption(pkgGoodsClassification);
+                    GoodsCategory category = GoodsCategory.getCategoryByStrId(strId);
+
+                    if (category != null) {
+                        pkg.setGoodsClassification(category);
+                    } else {
+                        throw new RuntimeException("Unable to retrieve proper GoodsCategory");
+                    }
                 }
             }
 
         }
-
     }
 
 }
