@@ -5,12 +5,14 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class ShipmentBuilder {
-    public static void buildShipment() {
+    public static Shipment buildShipment() {
         Shipment ship = createShipment(new Shipment());
-        displayShipmentSummary(ship);
+        //displayShipmentSummary(ship);
         //displayShipmentCost(ship);
         System.out.println("---DEBUG---");
         dummyValidation(ship);
+
+        return ship;
     }
 
     public static void dummyValidation(Shipment ship) {
@@ -184,5 +186,23 @@ public class ShipmentBuilder {
         System.out.println("-------------------");
         System.out.println("Total cost for shipment: " + ship.calculateShippingCost());
 
+    }
+
+    public static void deleteShipment(Shipment ship) {
+        Scanner input = new Scanner(System.in);
+        System.out.print("Would you like to delete this shipment? (y/n): ");
+        OptionMenu deleteMenu = new OptionMenu();
+        String[][] menuOptions = {{"1","Yes"},{"2","No"}};
+        deleteMenu.addAllMenuOptions(menuOptions);
+
+        System.out.printf("\n%s\n", deleteMenu.withTitle("Delete Shipment?").withDefault("1").menuAsString());
+        String menuChoice = deleteMenu.promptForChoice();
+        deleteMenu.isValidOption(menuChoice);
+
+        if (menuChoice.equals("1")) {
+            ship = null;
+        } else {
+            System.exit(0);
+        }
     }
 }

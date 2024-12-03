@@ -200,8 +200,7 @@ public class Shipment {
 
     //Get BaseRate
     public double getBaseRate() {
-        double baseRate = calculateBaseRate();
-        return baseRate;
+        return calculateBaseRate();
     }
 
 }
