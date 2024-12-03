@@ -16,22 +16,26 @@ public class Package {
         this.goodsClassification = null;
     }
 
-    public Package setHeight(double height){ 
+    public Package setHeight(double height){
+        if (height < 0.0) throw new RuntimeException("Height of package cannot be negative.");
         this.height = height; 
         return this;
     }
     
-    public Package setWidth(double width){ 
+    public Package setWidth(double width){
+        if (width < 0.0) throw new RuntimeException("Width of package cannot be negative.");
         this.width = width; 
         return this;
     }
     
     public Package setLength(double length){
+        if (length < 0.0) throw new RuntimeException("Length of package cannot be negative.");
         this.length = length;
         return this;
     }
 
     public Package setWeight(double weight){
+        if (weight < 0.0) throw new RuntimeException("Weight of package cannot be negative.");
         this.weight = weight;
         return this;
     }
@@ -59,9 +63,7 @@ public class Package {
 
     //Return the value of the largest dimension of the package
     public double getLargestDimension(){
-        double largestDimension = 0.0;
-
-        if (this.height > largestDimension) largestDimension = this.height;
+        double largestDimension = this.height;
         if (this.width > largestDimension) largestDimension = this.width;
         if (this.length > largestDimension) largestDimension = this.length;
 
