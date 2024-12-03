@@ -6,15 +6,18 @@ import java.util.Scanner;
 //This menu is a helper class for user option entry at the command line
 public class OptionMenu {
     private static String TempTitle;
-    private ArrayList<String> optionValue;
+    private ArrayList<String> optionChoiceValue;
     private ArrayList<String> optionLabel;
+    private ArrayList<String> optionDataValue;
+
     private int menuLength;
     private String defaultValue;
 
     public OptionMenu() {
         menuLength = 0;
-        optionValue = new ArrayList<>();
+        optionChoiceValue = new ArrayList<>();
         optionLabel = new ArrayList<>();
+        optionDataValue = new ArrayList<>();
     }
 
     private static String getTemp(String text){
@@ -30,31 +33,43 @@ public class OptionMenu {
         return tempText;
     }
 
+    //addAllMenuOptions supports an array of both a pair (choiceValue, choiceLabel) and triplet (choiceValue, choiceLabel, choiceDataValue)
     public OptionMenu addAllMenuOptions(String[][] valueLabelPairList){
         for (int i = 0; i < valueLabelPairList.length; i++) {
+            if (valueLabelPairList[i].length != 2 && valueLabelPairList[i].length != 3) {
+                throw new RuntimeException("Improper menu item provided to OptionsMenu");
+            }
+
             addMenuOption(valueLabelPairList[i]);
         }
         return this;
     }
 
-    public OptionMenu addMenuOption(String[] valueLabelPair) {
+    //addMenuOption supports an array representing a pair (choiceValue, choiceLabel) or triplet (choiceValue, choiceLabel, choiceDataValue)
+    public OptionMenu addMenuOption(String[] valueLabelTuple) {
         //Check to see if a string array of two items has been provided
-        if (valueLabelPair.length == 2) {
-            return addMenuOption(valueLabelPair[0], valueLabelPair[1]);
-        } else {
+        if (valueLabelTuple.length == 2) {
+            return addMenuOption(valueLabelTuple[0], valueLabelTuple[1]);
+        } else if (valueLabelTuple.length == 3) {
+            return addMenuOption(valueLabelTuple[0], valueLabelTuple[1],valueLabelTuple[2]);
+        }else {
             throw new IllegalArgumentException("Expected a pair of strings for menu option");
         }
     }
 
-    public OptionMenu addMenuOption(String value, String label){
-        if (optionValue.contains(value)){
-            int optionIndex = optionValue.indexOf(value);
-            optionLabel.set(optionIndex, label);
-        } else {
-            optionValue.add(value);
-            optionLabel.add(label);
-            menuLength++;
-        }
+    public OptionMenu addMenuOption(String choiceValue, String choiceLabel, String choiceDataValue) {
+        return addInternalMenuOption(choiceValue, choiceLabel, choiceDataValue);
+    }
+
+    public OptionMenu addMenuOption(String choiceValue, String choiceLabel){
+        return addInternalMenuOption(choiceValue,choiceLabel,null);
+    }
+
+    private OptionMenu addInternalMenuOption(String choiceValue, String choiceLabel, String choiceDataValue) {
+        optionDataValue.add(choiceDataValue);
+        optionChoiceValue.add(choiceValue);
+        optionLabel.add(choiceLabel);
+        menuLength++;
         return this;
     }
 
@@ -76,10 +91,10 @@ public class OptionMenu {
 
             //Override character to space if it is the last menu item
             newLine = (optionNum!=menuLength-1) ? newLine : ' ';
-            String optionString = String.format(" %s: %s ", optionValue.get(optionNum),optionLabel.get(optionNum));
+            String optionString = String.format(" %s: %s ", optionChoiceValue.get(optionNum),optionLabel.get(optionNum));
 
             //Style if default value present
-            String defaultValueStyle = (optionValue.get(optionNum).equals(defaultValue)) ? "\033[34m" : "";
+            String defaultValueStyle = (optionChoiceValue.get(optionNum).equals(defaultValue)) ? "\033[34m" : "";
             menuString.append(defaultValueStyle).append(optionString).append(RESET).append(newLine);
         }
         return menuString.toString();
@@ -91,7 +106,7 @@ public class OptionMenu {
     }
 
     public OptionMenu withDefault(String defaultValue){
-        if (optionValue.contains(defaultValue)){
+        if (optionChoiceValue.contains(defaultValue)){
             this.defaultValue = defaultValue;
         } else {
             throw new RuntimeException("Default option value does not exist");
@@ -100,7 +115,7 @@ public class OptionMenu {
     }
 
     public boolean isValidOption(String option){
-        return optionValue.contains(option);
+        return optionChoiceValue.contains(option);
     }
 
     public String promptForChoice(){
@@ -123,5 +138,15 @@ public class OptionMenu {
         }
 
 
+    }
+
+    public String getDataValueForOption(String option){
+        int index = indexForOption(option);
+        if (index != -1) return optionDataValue.get(index);
+        return null;
+    }
+
+    private int indexForOption(String option){
+        return optionChoiceValue.indexOf(option);
     }
 }
