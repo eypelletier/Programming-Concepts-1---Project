@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class OptionMenu {
     private static String TempTitle;
 
-    //Create MenuItem record keyword
+    //Create MenuItem record
     private record MenuItem(String choiceValue,String label,String dataValue) {}
 
     private ArrayList<MenuItem> menuItems;
