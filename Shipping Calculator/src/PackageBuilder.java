@@ -92,15 +92,31 @@ public class PackageBuilder {
         Scanner keyboard = new Scanner(System.in);
         boolean validInput = false;
         String userInput = "0.0";
+        double userInputDouble = 0.0;
 
         while (!validInput) {
             System.out.print(userPrompt);
             userInput = keyboard.nextLine();
-            if (userInput.isEmpty() || Double.parseDouble(userInput) > 0.0 ) {
-                validInput = true;
-            } else if (Double.parseDouble(userInput) < 0.0) {
+
+            try {
+
+                if (userInput.isEmpty()) {
+                    validInput = true;
+                }
+                else {
+                    userInputDouble = Double.parseDouble(userInput);
+
+                    if (userInputDouble < 0.0) {
+                        System.out.println("Please enter a positive number.");
+                    } else {
+                        validInput = true;
+                    }
+                }
+
+            } catch (NumberFormatException e) {
                 System.out.println("Please enter a positive number.");
             }
+
         }
 
         //If user input is empty return the default value
