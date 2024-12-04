@@ -54,6 +54,12 @@ public class Shipment {
         return shipmentPackages;
     }
 
+    public Package getPackageByIndex(int packageNum){
+        int packageCount = shipmentPackages.size();
+        if ( packageNum < 0 || packageNum >= packageCount) throw new IndexOutOfBoundsException("Package number out of bounds: " + packageNum);
+
+        return shipmentPackages.get(packageNum);
+    }
     public void setName(String Name) {
         this.name = Name;
     }
