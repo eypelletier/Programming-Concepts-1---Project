@@ -7,8 +7,6 @@ import java.util.Scanner;
 public class ShipmentBuilder {
     public static Shipment buildShipment() {
         Shipment ship = createShipment(new Shipment());
-        //displayShipmentSummary(ship);
-        //displayShipmentCost(ship);
         System.out.println("---DEBUG---");
         dummyValidation(ship);
 
@@ -31,11 +29,28 @@ public class ShipmentBuilder {
     }
 
     public static Shipment createShipment(Shipment ship) {
+        configureShipment(ship);
+        return ship;
+    }
+
+    public static void configureShipment(Shipment ship){
+        assignShipmentLabel(ship);
+        createShipmentPackages(ship);
+        assignShipmentOrigin(ship);
+        assignShipmentDestination(ship);
+        assignShipmentModality(ship);
+        assignShipmentPriority(ship);
+    }
+
+    public static void assignShipmentLabel(Shipment ship){
         Scanner keyboard = new Scanner(System.in);
         System.out.print("Please enter a label for the shipment: ");
         String shipLabel = keyboard.nextLine();
         ship.setName(shipLabel);
+    }
 
+    public static void createShipmentPackages(Shipment ship){
+        Scanner keyboard = new Scanner(System.in);
         System.out.print("How many packages would you like to ship: ");
         int numPackages = keyboard.nextInt();
         keyboard.nextLine();
@@ -45,16 +60,6 @@ public class ShipmentBuilder {
             Package newPackage = PackageBuilder.createPackage();
             ship.addToPackages(newPackage);
         }
-
-        configureShipment(ship);
-        return ship;
-    }
-
-    public static void configureShipment(Shipment ship){
-        assignShipmentOrigin(ship);
-        assignShipmentDestination(ship);
-        assignShipmentModality(ship);
-        assignShipmentPriority(ship);
     }
 
     public static void assignShipmentOrigin(Shipment ship){
@@ -186,6 +191,38 @@ public class ShipmentBuilder {
         System.out.println("-------------------");
         System.out.println("Total cost for shipment: " + ship.calculateShippingCost());
 
+    }
+
+    public static void modifyShipmentPackages(Shipment ship){
+        // Display all packages in the shipment
+        System.out.println("--- Packages in Shipment ---");
+        int packageIndex = 1;
+        for (Package pkg : ship.getPackages()) {
+            System.out.println(packageIndex + ". Package Label: " + pkg.getLabel());
+            System.out.println("   Goods Category: " + pkg.getGoodsClassification());
+            System.out.println("   Dimensions (HxWxL): " + pkg.getHeight() + " x " + pkg.getWidth() + " x " + pkg.getLength() + " cm");
+            System.out.println("   Weight: " + pkg.getWeight() + " kg");
+            packageIndex++;
+        }
+
+        // Get the package the user wishes to modify
+        Scanner keyboard = new Scanner(System.in);
+        System.out.print("Please enter the number of the package you would like to modify: ");
+        int packageChoice = keyboard.nextInt();
+        keyboard.nextLine();
+
+        if (packageChoice < 1 || packageChoice > ship.getPackages().size()) {
+            do {
+                System.out.println("Invalid package choice. Please try again.");
+            }
+            while (packageChoice < 1 || packageChoice > ship.getPackages().size());
+        }
+
+        // Retrieve the selected package
+        Package selectedPackage = ship.getPackages().get(packageChoice - 1);
+
+        // Allow user to modify package attributes
+        PackageBuilder.modifyPackage(selectedPackage);
     }
 
     public static void deleteShipment(Shipment ship) {
