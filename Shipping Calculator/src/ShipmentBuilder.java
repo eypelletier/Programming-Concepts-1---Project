@@ -20,8 +20,8 @@ public class ShipmentBuilder {
         for (var entry : rejectedPackages.entrySet()) {
 
             EnumSet<Shipment.PackageProblems> packageProblems = entry.getValue();
-            System.out.println("Package: "+entry.getKey().getLabel());
-            if (packageProblems.contains(Shipment.PackageProblems.GOODS_RESTRICTED_FOR_MODALITY)){
+            System.out.println("Package: " + entry.getKey().getLabel());
+            if (packageProblems.contains(Shipment.PackageProblems.GOODS_RESTRICTED_FOR_MODALITY)) {
                 System.out.println("Oh my god, we can't carry this package it is TOO dangerous!");
                 //dummyModifyPackage(entry.getKey());
             }
@@ -33,7 +33,7 @@ public class ShipmentBuilder {
         return ship;
     }
 
-    public static void configureShipment(Shipment ship){
+    public static void configureShipment(Shipment ship) {
         assignShipmentLabel(ship);
         createShipmentPackages(ship);
         assignShipmentOrigin(ship);
@@ -42,14 +42,14 @@ public class ShipmentBuilder {
         assignShipmentPriority(ship);
     }
 
-    public static void assignShipmentLabel(Shipment ship){
+    public static void assignShipmentLabel(Shipment ship) {
         Scanner keyboard = new Scanner(System.in);
         System.out.print("Please enter a label for the shipment: ");
         String shipLabel = keyboard.nextLine();
         ship.setName(shipLabel);
     }
 
-    public static void createShipmentPackages(Shipment ship){
+    public static void createShipmentPackages(Shipment ship) {
         Scanner keyboard = new Scanner(System.in);
         System.out.print("How many packages would you like to ship: ");
         int numPackages = keyboard.nextInt();
@@ -62,18 +62,18 @@ public class ShipmentBuilder {
         }
     }
 
-    public static void assignShipmentOrigin(Shipment ship){
+    public static void assignShipmentOrigin(Shipment ship) {
         Scanner keyboard = new Scanner(System.in);
         System.out.println("Please select the origin of the shipment:");
         OptionMenu originMenu = new OptionMenu();
         originMenu.addMenuOption("1", "Montreal")
                 .addMenuOption("2", "Toronto")
                 .addMenuOption("3", "Vancouver");
-        System.out.printf("\n%s\n",originMenu.menuAsString(true));
+        System.out.printf("\n%s\n", originMenu.menuAsString(true));
         System.out.print("Choice: ");
         String originMenuChoice = keyboard.nextLine();
         originMenu.isValidOption(originMenuChoice);
-        switch (originMenuChoice){
+        switch (originMenuChoice) {
             case "1":
                 ship.setOrigin(City.MONTREAL);
                 break;
@@ -86,18 +86,18 @@ public class ShipmentBuilder {
         }
     }
 
-    public static void assignShipmentDestination(Shipment ship){
+    public static void assignShipmentDestination(Shipment ship) {
         Scanner keyboard = new Scanner(System.in);
         System.out.println("Please select the destination for the shipment:");
         OptionMenu destinationMenu = new OptionMenu();
         destinationMenu.addMenuOption("1", "Montreal")
                 .addMenuOption("2", "Toronto")
                 .addMenuOption("3", "Vancouver");
-        System.out.printf("\n%s\n",destinationMenu.menuAsString(true));
+        System.out.printf("\n%s\n", destinationMenu.menuAsString(true));
         System.out.print("Choice: ");
         String destinationMenuChoice = keyboard.nextLine();
         destinationMenu.isValidOption(destinationMenuChoice);
-        switch (destinationMenuChoice){
+        switch (destinationMenuChoice) {
             case "1":
                 ship.setDestination(City.MONTREAL);
                 break;
@@ -110,7 +110,7 @@ public class ShipmentBuilder {
         }
     }
 
-    public static void assignShipmentModality(Shipment ship){
+    public static void assignShipmentModality(Shipment ship) {
         Scanner keyboard = new Scanner(System.in);
         System.out.println("Please select the method of transportation:");
 
@@ -120,11 +120,11 @@ public class ShipmentBuilder {
                 .addMenuOption("3", "Sea")
                 .addMenuOption("4", "Air");
 
-        System.out.printf("\n%s\n",transportationMenu.menuAsString(true));
+        System.out.printf("\n%s\n", transportationMenu.menuAsString(true));
         System.out.print("Choice: ");
         String transportationMenuChoice = keyboard.nextLine();
         transportationMenu.isValidOption(transportationMenuChoice);
-        switch (transportationMenuChoice){
+        switch (transportationMenuChoice) {
             case "1":
                 ship.setShippingMethod(DeliveryModality.TRUCK);
                 break;
@@ -140,17 +140,17 @@ public class ShipmentBuilder {
         }
     }
 
-    static public void assignShipmentPriority(Shipment ship){
+    static public void assignShipmentPriority(Shipment ship) {
         Scanner keyboard = new Scanner(System.in);
         System.out.println("Please select a priority for the shipment:");
         OptionMenu priorityMenu = new OptionMenu();
         priorityMenu.addMenuOption("1", "Standard")
                 .addMenuOption("2", "Express");
-        System.out.printf("\n%s\n",priorityMenu.menuAsString(true));
+        System.out.printf("\n%s\n", priorityMenu.menuAsString(true));
         System.out.print("Choice: ");
         String priorityMenuChoice = keyboard.nextLine();
         priorityMenu.isValidOption(priorityMenuChoice);
-        switch (priorityMenuChoice){
+        switch (priorityMenuChoice) {
             case "1":
                 ship.setShippingSpeed(DeliveryStandard.STANDARD);
                 break;
@@ -193,7 +193,7 @@ public class ShipmentBuilder {
 
     }
 
-    public static void modifyShipmentPackages(Shipment ship){
+    public static void modifyShipmentPackages(Shipment ship) {
         // Display all packages in the shipment
         System.out.println("--- Packages in Shipment ---");
         int packageIndex = 1;
@@ -207,19 +207,20 @@ public class ShipmentBuilder {
 
         // Get the package the user wishes to modify
         Scanner keyboard = new Scanner(System.in);
-        System.out.print("Please enter the number of the package you would like to modify: ");
-        int packageChoice = keyboard.nextInt();
-        keyboard.nextLine();
+        int packageCount = ship.getPackages().size();
+        int packageChoice = 0;
+        boolean validUserChoice = false;
 
-        if (packageChoice < 1 || packageChoice > ship.getPackages().size()) {
-            do {
-                System.out.println("Invalid package choice. Please try again.");
-            }
-            while (packageChoice < 1 || packageChoice > ship.getPackages().size());
+        while (!validUserChoice) {
+            System.out.print("Please enter the number of the package you would like to modify: ");
+            packageChoice = Integer.parseInt(keyboard.nextLine());
+
+            validUserChoice = (packageChoice >= 1) && (packageChoice <= packageCount);
+            if (!validUserChoice) System.out.println("Invalid package choice. Please try again.");
         }
 
         // Retrieve the selected package
-        Package selectedPackage = ship.getPackages().get(packageChoice - 1);
+        Package selectedPackage = ship.getPackageByIndex(packageChoice - 1);
 
         // Allow user to modify package attributes
         PackageBuilder.modifyPackage(selectedPackage);
@@ -229,7 +230,7 @@ public class ShipmentBuilder {
         Scanner input = new Scanner(System.in);
         System.out.print("Would you like to delete this shipment? (y/n): ");
         OptionMenu deleteMenu = new OptionMenu();
-        String[][] menuOptions = {{"1","Yes"},{"2","No"}};
+        String[][] menuOptions = {{"1", "Yes"}, {"2", "No"}};
         deleteMenu.addAllMenuOptions(menuOptions);
 
         System.out.printf("\n%s\n", deleteMenu.withTitle("Delete Shipment?").withDefault("1").menuAsString());
@@ -241,5 +242,64 @@ public class ShipmentBuilder {
         } else {
             System.exit(0);
         }
+    }
+
+    // Method to handle modifying the shipment
+    public static void modifyShipment(Shipment shipment) {
+        String modifyMenuChoice;
+        do {
+            System.out.println("Would you like to modify the shipment?");
+            OptionMenu modifyMenu = new OptionMenu();
+            String[][] modifyMenuOptions = {{"1", "Yes"}, {"2", "No"}};
+            modifyMenu.addAllMenuOptions(modifyMenuOptions);
+            System.out.printf("\n%s\n", modifyMenu.withTitle("Modify Shipment").menuAsString());
+            modifyMenuChoice = modifyMenu.promptForChoice();
+            modifyMenu.isValidOption(modifyMenuChoice);
+
+            if (modifyMenuChoice.equals("1")) {
+                modifyShipmentDetails(shipment);
+            }
+        } while (modifyMenuChoice.equals("1"));  // Continue looping if user selects "1" (Yes)
+
+        System.out.println("No modifications requested.");
+        displayShipmentCost(shipment);
+        System.out.println();
+        //endProgram();
+    }
+
+    // Method to handle modifying specific shipment details
+    private static void modifyShipmentDetails(Shipment shipment) {
+        System.out.println("Which part of the shipment would you like to modify?");
+        OptionMenu shipModifyMenu = new OptionMenu();
+        String[][] shipModifyMenuOptions = {{"1", "Label"}, {"2", "Packages"}, {"3", "Origin"},
+                {"4", "Destination"}, {"5", "Priority"}};
+        shipModifyMenu.addAllMenuOptions(shipModifyMenuOptions);
+        System.out.printf("\n%s\n", shipModifyMenu.withTitle("Modification Choice").menuAsString());
+        String shipModifyMenuChoice = shipModifyMenu.promptForChoice();
+        shipModifyMenu.isValidOption(shipModifyMenuChoice);
+
+        switch (shipModifyMenuChoice) {
+            case "1":
+                assignShipmentLabel(shipment);
+                break;
+            case "2":
+                modifyShipmentPackages(shipment);
+                break;
+            case "3":
+                assignShipmentOrigin(shipment);
+                break;
+            case "4":
+                assignShipmentDestination(shipment);
+                break;
+            case "5":
+                assignShipmentPriority(shipment);
+                break;
+            default:
+                System.out.println("Invalid option selected.");
+                break;
+        }
+
+        // Re-display the shipment summary after modification
+        displayShipmentSummary(shipment);
     }
 }
