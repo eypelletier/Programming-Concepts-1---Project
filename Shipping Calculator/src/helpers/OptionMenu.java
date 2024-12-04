@@ -6,18 +6,16 @@ import java.util.Scanner;
 //This menu is a helper class for user option entry at the command line
 public class OptionMenu {
     private static String TempTitle;
-    private ArrayList<String> optionChoiceValue;
-    private ArrayList<String> optionLabel;
-    private ArrayList<String> optionDataValue;
 
-    private int menuLength;
+    //Create MenuItem record keyword
+    private record MenuItem(String choiceValue,String label,String dataValue) {}
+
+    private ArrayList<MenuItem> menuItems;
+
     private String defaultValue;
 
     public OptionMenu() {
-        menuLength = 0;
-        optionChoiceValue = new ArrayList<>();
-        optionLabel = new ArrayList<>();
-        optionDataValue = new ArrayList<>();
+        menuItems = new ArrayList<MenuItem>();
     }
 
     private static String getTemp(String text){
@@ -66,10 +64,7 @@ public class OptionMenu {
     }
 
     private OptionMenu addInternalMenuOption(String choiceValue, String choiceLabel, String choiceDataValue) {
-        optionDataValue.add(choiceDataValue);
-        optionChoiceValue.add(choiceValue);
-        optionLabel.add(choiceLabel);
-        menuLength++;
+        menuItems.add(new MenuItem(choiceValue, choiceLabel, choiceDataValue));
         return this;
     }
 
@@ -79,6 +74,7 @@ public class OptionMenu {
 
     public String menuAsString(boolean inlined){
         StringBuilder menuString = new StringBuilder();
+        int menuLength = menuItems.size();
         final String RESET = "\033[49m\033[39m\033[0m";
 
         //Add Menu Title If Present
@@ -86,15 +82,16 @@ public class OptionMenu {
         if (titleString!=null) menuString.append("\033[47m\033[30m=== ").append(titleString).append(" ===").append(RESET).append("\n");
 
         for (int optionNum = 0; optionNum < menuLength; optionNum++) {
+            MenuItem menuItem = menuItems.get(optionNum);
             //Use inline divider if inlined is true
             char newLine = (inlined) ? '/' : '\n';
 
             //Override character to space if it is the last menu item
             newLine = (optionNum!=menuLength-1) ? newLine : ' ';
-            String optionString = String.format(" %s: %s ", optionChoiceValue.get(optionNum),optionLabel.get(optionNum));
+            String optionString = String.format(" %s: %s ", menuItem.choiceValue(),menuItem.label());
 
             //Style if default value present
-            String defaultValueStyle = (optionChoiceValue.get(optionNum).equals(defaultValue)) ? "\033[34m" : "";
+            String defaultValueStyle = (defaultValue != null) ? "\033[34m" : "";
             menuString.append(defaultValueStyle).append(optionString).append(RESET).append(newLine);
         }
         return menuString.toString();
@@ -106,7 +103,7 @@ public class OptionMenu {
     }
 
     public OptionMenu withDefault(String defaultValue){
-        if (optionChoiceValue.contains(defaultValue)){
+        if (getMenuItemForChoice(defaultValue)!=null) {
             this.defaultValue = defaultValue;
         } else {
             throw new RuntimeException("Default option value does not exist");
@@ -114,8 +111,8 @@ public class OptionMenu {
         return this;
     }
 
-    public boolean isValidOption(String option){
-        return optionChoiceValue.contains(option);
+    public boolean isValidOption(String selectedOption){
+        return (getMenuItemForChoice(selectedOption) != null);
     }
 
     public String promptForChoice(){
@@ -141,12 +138,15 @@ public class OptionMenu {
     }
 
     public String getDataValueForOption(String option){
-        int index = indexForOption(option);
-        if (index != -1) return optionDataValue.get(index);
+        MenuItem selectedItem = getMenuItemForChoice(option);
+        if (selectedItem != null) return selectedItem.dataValue();
         return null;
     }
 
-    private int indexForOption(String option){
-        return optionChoiceValue.indexOf(option);
+    private MenuItem getMenuItemForChoice(String choiceValue){
+        for(MenuItem menuItem : menuItems){
+            if (menuItem.choiceValue().equals(choiceValue)) return menuItem;
+        }
+        return null;
     }
 }
