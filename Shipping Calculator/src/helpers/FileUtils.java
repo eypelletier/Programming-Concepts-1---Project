@@ -5,8 +5,8 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class FileUtils {
-    public static String readLastManifest(String filename) {
-        File lastManifestFile = new File("./"+filename);
+    public static String readLastManifest(String filePath) {
+        File lastManifestFile = new File(filePath);
         String lastManifestString = "";
 
         if (!lastManifestFile.exists()) return lastManifestString;
