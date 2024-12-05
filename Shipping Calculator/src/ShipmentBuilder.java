@@ -73,7 +73,7 @@ public class ShipmentBuilder {
         originMenu.addMenuOption("1", "Montreal")
                 .addMenuOption("2", "Toronto")
                 .addMenuOption("3", "Vancouver");
-        boolean validChoice = false;
+        boolean validChoice;
         do {
             System.out.print("\nPlease select the origin of the shipment:");
             System.out.printf("\n%s", originMenu.menuAsString(true));
@@ -101,7 +101,7 @@ public class ShipmentBuilder {
         destinationMenu.addMenuOption("1", "Montreal")
                 .addMenuOption("2", "Toronto")
                 .addMenuOption("3", "Vancouver");
-        boolean validChoice = false;
+        boolean validChoice;
         do {
             System.out.print("\nPlease select the destination for the shipment:");
             System.out.printf("\n%s", destinationMenu.menuAsString(true));
@@ -129,7 +129,7 @@ public class ShipmentBuilder {
                 .addMenuOption("2", "Rail")
                 .addMenuOption("3", "Sea")
                 .addMenuOption("4", "Air");
-        boolean validChoice = false;
+        boolean validChoice;
         do {
             System.out.print("\nPlease select the method of transportation:");
             System.out.printf("\n%s", transportationMenu.menuAsString(true));
@@ -158,7 +158,7 @@ public class ShipmentBuilder {
         String priorityMenuChoice;
         priorityMenu.addMenuOption("1", "Standard")
                 .addMenuOption("2", "Express");
-        boolean validChoice = false;
+        boolean validChoice;
         do {
             System.out.print("\nPlease select a priority for the shipment:");
             System.out.printf("\n%s", priorityMenu.menuAsString(true));
@@ -254,24 +254,6 @@ public class ShipmentBuilder {
 
         // Allow user to modify package attributes
         PackageBuilder.modifyPackage(selectedPackage);
-    }
-
-    public static void deleteShipment(Shipment ship) {
-        Scanner input = new Scanner(System.in);
-        System.out.print("Would you like to delete this shipment? (y/n): ");
-        OptionMenu deleteMenu = new OptionMenu();
-        String[][] menuOptions = {{"1", "Yes"}, {"2", "No"}};
-        deleteMenu.addAllMenuOptions(menuOptions);
-
-        System.out.printf("\n%s\n", deleteMenu.withTitle("Delete Shipment?").withDefault("1").menuAsString());
-        String menuChoice = deleteMenu.promptForChoice();
-        deleteMenu.isValidOption(menuChoice);
-
-        if (menuChoice.equals("1")) {
-            ship = null;
-        } else {
-            System.exit(0);
-        }
     }
 
     // Method to handle modifying the shipment
@@ -370,7 +352,7 @@ public class ShipmentBuilder {
         sbTemp.append("-------------------\n");
         sbTemp.append("Total cost for ship: ").append(ship.calculateShippingCost()).append("\n");
 
-        // Saved the string builder as a string
+        // Save the string builder as a string
         String shipmentDetails = sbTemp.toString();
 
         // Pass the string to the writeManifest method to save the file and return a message if successful
