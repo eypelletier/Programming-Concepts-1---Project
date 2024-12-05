@@ -31,6 +31,7 @@ public class ShippingCalculator {
                 shipment = ShipmentBuilder.buildShipment();
                 ShipmentBuilder.modifyShipment(shipment);
                 ShipmentBuilder.exportShipmentDetails(shipment);
+                endProgram();
                 break;
 
             case "2":
