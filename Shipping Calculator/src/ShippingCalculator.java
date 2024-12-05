@@ -6,22 +6,16 @@ public class ShippingCalculator {
         System.out.println("Welcome to SuperShipper - Steam Early Release - pre-v0.1\n" +
                 "We will assist with calculating the cost of your shipment.");
 
+        OptionMenu startMenu = new OptionMenu();
         String startMenuChoice;
-        OptionMenu startMenu;
-        boolean validChoice = false;
+        String[][] startMenuOptions = {{"1", "Create New Shipment"}, {"2", "Quit"}};
+        startMenu.addAllMenuOptions(startMenuOptions);
+        boolean validChoice;
         do {
-            startMenu = new OptionMenu();
-            String[][] startMenuOptions = {{"1", "Create New Shipment"}, {"2", "Quit"}};
-            startMenu.addAllMenuOptions(startMenuOptions);
+
             System.out.printf("\n%s\n", startMenu.withTitle("Main Menu").withDefault("1").menuAsString());
             startMenuChoice = startMenu.promptForChoice();
-            startMenu.isValidOption(startMenuChoice);
-            if (startMenuChoice.equals("1") || startMenuChoice.equals("2")) {
-                validChoice = true;
-            }
-            else {
-                System.out.println("Invalid option. Try again.");
-            }
+            validChoice = startMenu.isValidOption(startMenuChoice);
         }
         while (!validChoice);
 
