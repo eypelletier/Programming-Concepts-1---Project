@@ -1,5 +1,6 @@
 package helpers;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /** Assists with the creation of text menus for user to select options
@@ -17,11 +18,25 @@ public class OptionMenu {
     //Default value for the menu
     private String defaultValue;
 
+    //Currently disabled options
+    private ArrayList<String> disabledItems;
+
+    //Invalid enum option reasons
+    public enum OptionValidity {
+        VALID,
+        INVALID_NON_EXISTENT,
+        INVALID_DISABLED
+    }
+
+    private OptionValidity lastValidityCheckResult;
+
     /** Constructor
      *
      */
     public OptionMenu() {
+        this.lastValidityCheckResult = OptionValidity.VALID;
         menuItems = new ArrayList<MenuItem>();
+        disabledItems = new ArrayList<String>();
     }
 
     /** retrieve a temporary class property and destroy it after retrieval
@@ -133,6 +148,7 @@ public class OptionMenu {
 
         for (int optionNum = 0; optionNum < menuLength; optionNum++) {
             MenuItem menuItem = menuItems.get(optionNum);
+
             //Use inline divider if inlined is true
             char newLine = (inlined) ? '/' : '\n';
 
@@ -140,9 +156,15 @@ public class OptionMenu {
             newLine = (optionNum!=menuLength-1) ? newLine : ' ';
             String optionString = String.format(" %s: %s ", menuItem.choiceValue(),menuItem.label());
 
-            //Style if default value present
-            String defaultValueStyle = (defaultValue != null) ? "\033[34m" : "";
-            menuString.append(defaultValueStyle).append(optionString).append(RESET).append(newLine);
+            //Style if option is disabled
+            String disabledStyle = "";
+            if (isOptionDisabled(menuItem.choiceValue)) {
+                disabledStyle = "\033[31m";
+            }
+
+            //Style if default value present and option isn't disabled
+            String defaultValueStyle = (defaultValue != null && disabledStyle.isEmpty() ) ? "\033[34m" : "";
+            menuString.append(defaultValueStyle).append(disabledStyle).append(optionString).append(RESET).append(newLine);
         }
         return menuString.toString();
     }
@@ -177,7 +199,16 @@ public class OptionMenu {
      * @return a boolean representing if the provided option exists for the menu
      */
     public boolean isValidOption(String selectedOption){
-        return (getMenuItemForChoice(selectedOption) != null);
+        if (getMenuItemForChoice(selectedOption) == null){
+            lastValidityCheckResult = OptionValidity.INVALID_NON_EXISTENT;
+        }
+        else if (disabledItems.contains(selectedOption)){
+            lastValidityCheckResult = OptionValidity.INVALID_DISABLED;
+        } else {
+            lastValidityCheckResult = OptionValidity.VALID;
+        }
+
+        return (lastValidityCheckResult == OptionValidity.VALID);
     }
 
     /** prompts the user for a choice and presenting the default if present using standard language
@@ -232,5 +263,21 @@ public class OptionMenu {
             if (menuItem.choiceValue().equals(choiceValue)) return menuItem;
         }
         return null;
+    }
+
+    //Possible changes follow below
+    public OptionMenu withDisabled(String[] disabledOptions){
+        this.disabledItems.clear();
+        disabledItems.addAll(Arrays.asList(disabledOptions));
+        return this;
+    }
+
+    public boolean isOptionDisabled(String optionChoiceValue){
+        return (this.disabledItems.contains(optionChoiceValue));
+
+    }
+
+    public OptionValidity getLastValidityCheckResult() {
+        return lastValidityCheckResult;
     }
 }
