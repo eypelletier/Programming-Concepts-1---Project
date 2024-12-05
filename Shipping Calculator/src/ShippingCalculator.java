@@ -29,7 +29,6 @@ public class ShippingCalculator {
         switch (startMenuChoice) {
             case "1":
                 shipment = ShipmentBuilder.buildShipment();
-                ShipmentBuilder.displayShipmentSummary(shipment);
                 ShipmentBuilder.modifyShipment(shipment);
                 ShipmentBuilder.exportShipmentDetails(shipment);
                 break;

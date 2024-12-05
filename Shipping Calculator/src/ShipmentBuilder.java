@@ -79,7 +79,6 @@ public class ShipmentBuilder {
             System.out.printf("\n%s", originMenu.menuAsString(true));
             originMenuChoice = originMenu.promptForChoice();
             validChoice = originMenu.isValidOption(originMenuChoice);
-            System.out.println();
         }
         while (!validChoice);
         switch (originMenuChoice) {
@@ -185,7 +184,7 @@ public class ShipmentBuilder {
         Random random = new Random();
         int randomNumber = random.nextInt(99) + 1; // Generate a random number between 1 and 99
 
-        // Format the tracking number as: YYYYMMDD-originCode-destinationCode-random
+        // Format the tracking number as: TRK+YYYYMMDD+originCode+destinationCode+random
         String trackingNumber = String.format("TRK%04d%02d%02d%02d%02d%02d",
                 year, month, day, originCode, destinationCode, randomNumber);
         ship.setShipmentTrackingNumber(trackingNumber);
@@ -258,6 +257,9 @@ public class ShipmentBuilder {
 
     // Method to handle modifying the shipment
     public static void modifyShipment(Shipment shipment) {
+        // Call method to display the configured shipment
+        displayShipmentSummary(shipment);
+
         String modifyMenuChoice;
         do {
             System.out.println("Would you like to modify the shipment?");
