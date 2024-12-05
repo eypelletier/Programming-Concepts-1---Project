@@ -29,12 +29,9 @@ public class ShippingCalculator {
         switch (startMenuChoice) {
             case "1":
                 shipment = ShipmentBuilder.buildShipment();
-                if (shipment != null) {
-                    ShipmentBuilder.displayShipmentSummary(shipment);
-                    ShipmentBuilder.modifyShipment(shipment);
-                } else {
-                    System.out.println("There is no shipment to display!");
-                }
+                ShipmentBuilder.displayShipmentSummary(shipment);
+                ShipmentBuilder.modifyShipment(shipment);
+                ShipmentBuilder.exportShipmentDetails(shipment);
                 break;
 
             case "2":

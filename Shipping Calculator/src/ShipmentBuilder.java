@@ -1,10 +1,12 @@
 import helpers.OptionMenu;
+import helpers.FileUtils;
 
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Scanner;
 import java.time.LocalDate;
 import java.util.Random;
+
 
 public class ShipmentBuilder {
     public static Shipment buildShipment() {
@@ -66,15 +68,14 @@ public class ShipmentBuilder {
     }
 
     public static void assignShipmentOrigin(Shipment ship) {
-        OptionMenu originMenu;
+        OptionMenu originMenu = new OptionMenu();
         String originMenuChoice;
+        originMenu.addMenuOption("1", "Montreal")
+                .addMenuOption("2", "Toronto")
+                .addMenuOption("3", "Vancouver");
         boolean validChoice = false;
         do {
             System.out.print("\nPlease select the origin of the shipment:");
-            originMenu = new OptionMenu();
-            originMenu.addMenuOption("1", "Montreal")
-                    .addMenuOption("2", "Toronto")
-                    .addMenuOption("3", "Vancouver");
             System.out.printf("\n%s", originMenu.menuAsString(true));
             originMenuChoice = originMenu.promptForChoice();
             validChoice = originMenu.isValidOption(originMenuChoice);
@@ -95,15 +96,14 @@ public class ShipmentBuilder {
     }
 
     public static void assignShipmentDestination(Shipment ship) {
-        OptionMenu destinationMenu;
+        OptionMenu destinationMenu = new OptionMenu();
         String destinationMenuChoice;
+        destinationMenu.addMenuOption("1", "Montreal")
+                .addMenuOption("2", "Toronto")
+                .addMenuOption("3", "Vancouver");
         boolean validChoice = false;
         do {
             System.out.print("\nPlease select the destination for the shipment:");
-            destinationMenu = new OptionMenu();
-            destinationMenu.addMenuOption("1", "Montreal")
-                    .addMenuOption("2", "Toronto")
-                    .addMenuOption("3", "Vancouver");
             System.out.printf("\n%s", destinationMenu.menuAsString(true));
             destinationMenuChoice = destinationMenu.promptForChoice();
             validChoice = destinationMenu.isValidOption(destinationMenuChoice);
@@ -123,17 +123,15 @@ public class ShipmentBuilder {
     }
 
     public static void assignShipmentModality(Shipment ship) {
-        OptionMenu transportationMenu;
+        OptionMenu transportationMenu = new OptionMenu();
         String transportationMenuChoice;
+        transportationMenu.addMenuOption("1", "Truck")
+                .addMenuOption("2", "Rail")
+                .addMenuOption("3", "Sea")
+                .addMenuOption("4", "Air");
         boolean validChoice = false;
         do {
             System.out.print("\nPlease select the method of transportation:");
-            transportationMenu = new OptionMenu();
-            transportationMenu.addMenuOption("1", "Truck")
-                    .addMenuOption("2", "Rail")
-                    .addMenuOption("3", "Sea")
-                    .addMenuOption("4", "Air");
-
             System.out.printf("\n%s", transportationMenu.menuAsString(true));
             transportationMenuChoice = transportationMenu.promptForChoice();
             validChoice = transportationMenu.isValidOption(transportationMenuChoice);
@@ -156,14 +154,13 @@ public class ShipmentBuilder {
     }
 
     static public void assignShipmentPriority(Shipment ship) {
-        OptionMenu priorityMenu;
+        OptionMenu priorityMenu = new OptionMenu();
         String priorityMenuChoice;
+        priorityMenu.addMenuOption("1", "Standard")
+                .addMenuOption("2", "Express");
         boolean validChoice = false;
         do {
             System.out.print("\nPlease select a priority for the shipment:");
-            priorityMenu = new OptionMenu();
-            priorityMenu.addMenuOption("1", "Standard")
-                    .addMenuOption("2", "Express");
             System.out.printf("\n%s", priorityMenu.menuAsString(true));
             priorityMenuChoice = priorityMenu.promptForChoice();
             validChoice = priorityMenu.isValidOption(priorityMenuChoice);
@@ -334,5 +331,55 @@ public class ShipmentBuilder {
 
         // Re-display the shipment summary after modification
         displayShipmentSummary(shipment);
+    }
+
+    //Method to print the summary and costs to a file
+    public static void exportShipmentDetails(Shipment ship) {
+        // File path location
+        String filePath = "Manifest.txt";
+
+        // Create a StringBuilder to build the content
+        StringBuilder sbTemp = new StringBuilder();
+
+        // Append ship summary to the StringBuilder
+        sbTemp.append("--- Shipment Summary ---\n");
+        sbTemp.append("Shipment Label: ").append(ship.getName()).append("\n");
+        sbTemp.append("Origin: ").append(ship.getOrigin()).append("\n");
+        sbTemp.append("Destination: ").append(ship.getDestination()).append("\n");
+        sbTemp.append("Shipping Method: ").append(ship.getShippingMethod()).append("\n");
+        sbTemp.append("Shipping Speed: ").append(ship.getShippingSpeed()).append("\n");
+        sbTemp.append("Tracking number: ").append(ship.getShipmentTrackingNumber()).append("\n");
+
+        // Append package information to the StringBuilder
+        sbTemp.append("\n--- Packages ---\n");
+        for (Package pkg : ship.getPackages()) {
+            sbTemp.append("Package Label: ").append(pkg.getLabel()).append("\n");
+            sbTemp.append("Goods Category: ").append(pkg.getGoodsClassification()).append("\n");
+            sbTemp.append("Dimensions (HxWxL): ").append(pkg.getHeight()).append(" x ")
+                    .append(pkg.getWidth()).append(" x ").append(pkg.getLength()).append(" cm\n");
+            sbTemp.append("Weight: ").append(pkg.getWeight()).append(" kg\n");
+            sbTemp.append("-------------------\n");
+        }
+
+        // Append ship cost to the StringBuilder
+        sbTemp.append("\n--- Shipment Cost ---\n");
+        sbTemp.append("Base Shipping Rate: ").append(ship.getBaseRate()).append("\n");
+        sbTemp.append("Shipment Weight Surcharge: ").append(ship.getWeightSurcharge()).append("\n");
+        sbTemp.append("Shipment Method Surcharge: ").append(ship.getModalitySurcharge()).append("\n");
+        sbTemp.append("Shipment Priority Surcharge: ").append(ship.getPrioritySurcharge()).append("\n");
+        sbTemp.append("-------------------\n");
+        sbTemp.append("Total cost for ship: ").append(ship.calculateShippingCost()).append("\n");
+
+        // Saved the string builder as a string
+        String shipmentDetails = sbTemp.toString();
+
+        // Pass the string to the writeManifest method to save the file and return a message if successful
+        boolean isSaved = FileUtils.writeManifest(shipmentDetails, filePath);
+        if (isSaved) {
+            System.out.printf("Your shipment was saved successfully to %s.%n", filePath);
+        } else {
+            System.out.println("There was an error saving the shipment details.");
+        }
+
     }
 }
