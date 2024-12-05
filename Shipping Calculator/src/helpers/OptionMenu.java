@@ -1,10 +1,12 @@
 package helpers;
-
 import java.util.ArrayList;
 import java.util.Scanner;
 
-//This menu is a helper class for user option entry at the command line
+/** Assists with the creation of text menus for user to select options
+ *
+ */
 public class OptionMenu {
+    //Temporary title for use with a single invocation of menu rendering methods
     private static String TempTitle;
 
     //Create MenuItem record
@@ -12,12 +14,21 @@ public class OptionMenu {
 
     private ArrayList<MenuItem> menuItems;
 
+    //Default value for the menu
     private String defaultValue;
 
+    /** Constructor
+     *
+     */
     public OptionMenu() {
         menuItems = new ArrayList<MenuItem>();
     }
 
+    /** retrieve a temporary class property and destroy it after retrieval
+     *
+     * @param text, a string representing the name of the content to retrieve
+     * @return a string representing the string content of a string field
+     */
     private static String getTemp(String text){
         String tempText = null;
         switch(text){
@@ -31,19 +42,29 @@ public class OptionMenu {
         return tempText;
     }
 
-    //addAllMenuOptions supports an array of both a pair (choiceValue, choiceLabel) and triplet (choiceValue, choiceLabel, choiceDataValue)
-    public OptionMenu addAllMenuOptions(String[][] valueLabelPairList){
-        for (int i = 0; i < valueLabelPairList.length; i++) {
-            if (valueLabelPairList[i].length != 2 && valueLabelPairList[i].length != 3) {
+
+    /** adds all menu options provided to the menu
+     * Supports an array of both a pair (choiceValue, choiceLabel) and triplet (choiceValue, choiceLabel, choiceDataValue)
+     * @param menuItemTupleList, an array of strings containing an array (tuple) of string values
+     * @return this OptionMenu
+     */
+    public OptionMenu addAllMenuOptions(String[][] menuItemTupleList){
+        for (int i = 0; i < menuItemTupleList.length; i++) {
+            if (menuItemTupleList[i].length != 2 && menuItemTupleList[i].length != 3) {
                 throw new RuntimeException("Improper menu item provided to OptionsMenu");
             }
 
-            addMenuOption(valueLabelPairList[i]);
+            addMenuOption(menuItemTupleList[i]);
         }
         return this;
     }
 
-    //addMenuOption supports an array representing a pair (choiceValue, choiceLabel) or triplet (choiceValue, choiceLabel, choiceDataValue)
+    /** determines if the valueLabelTuple provided has two or three items and forwards it to the appropriate
+     * method
+     *
+     * @param valueLabelTuple, a string array of either a pair (choiceValue, choiceLabel) or triplet (choiceValue, choiceLabel, choiceDataValue)
+     * @return this OptionMenu
+     */
     public OptionMenu addMenuOption(String[] valueLabelTuple) {
         //Check to see if a string array of two items has been provided
         if (valueLabelTuple.length == 2) {
@@ -55,23 +76,52 @@ public class OptionMenu {
         }
     }
 
+    /** add menu item according to alternate approach with distinct variables for menu item related properties
+     *
+     * @param choiceValue, a string representing the value a user must type in
+     * @param choiceLabel, a string representing the label printed for the menu option
+     * @param choiceDataValue, a string representing other related data to be stored with the menu item
+     * @return this OptionMenu to allow for method chaining
+     */
     public OptionMenu addMenuOption(String choiceValue, String choiceLabel, String choiceDataValue) {
         return addInternalMenuOption(choiceValue, choiceLabel, choiceDataValue);
     }
 
+    /** add menu item according to alternate approach with distinct variables for menu item related properties
+     *
+     * @param choiceValue, a string representing the value a user must type in
+     * @param choiceLabel, a string representing the label printed for the menu option
+     * @return this OptionMenu to allow for method chaining
+     */
     public OptionMenu addMenuOption(String choiceValue, String choiceLabel){
         return addInternalMenuOption(choiceValue,choiceLabel,null);
     }
 
+    /** private method that adds a created MenuItem to the menuItems for the menu
+     *
+     * @param choiceValue, a string representing the value a user must type in
+     * @param choiceLabel, a string representing the label printed for the menu option
+     * @param choiceDataValue, a string representing other related data to be stored with the menu item
+     * @return this OptionMenu to allow for method chaining
+     */
     private OptionMenu addInternalMenuOption(String choiceValue, String choiceLabel, String choiceDataValue) {
         menuItems.add(new MenuItem(choiceValue, choiceLabel, choiceDataValue));
         return this;
     }
 
+    /** convenience method to default to non-inline presentation/rendering of menu
+     *
+     * @return a string representing the rendered menu
+     */
     public String menuAsString(){
         return menuAsString(false);
     }
 
+    /** renders the menu as a string
+     *
+     * @param inlined, a boolean indicating whether the menu is to be rendered inline or vertically
+     * @return, a string representation of the rendered menu
+     */
     public String menuAsString(boolean inlined){
         StringBuilder menuString = new StringBuilder();
         int menuLength = menuItems.size();
@@ -97,11 +147,21 @@ public class OptionMenu {
         return menuString.toString();
     }
 
+    /** set the title of the menu
+     *
+     * @param title, as string representing the title of the menu
+     * @return this OptionMenu, to allow for method chaining
+     */
     public OptionMenu withTitle(String title){
         TempTitle = title;
         return this;
     }
 
+    /** set the default value for the menu
+     *
+     * @param defaultValue, as string representation of the default selection for the menu
+     * @return, this OptionMenu, to allow for method chaining
+     */
     public OptionMenu withDefault(String defaultValue){
         if (getMenuItemForChoice(defaultValue)!=null) {
             this.defaultValue = defaultValue;
@@ -111,10 +171,19 @@ public class OptionMenu {
         return this;
     }
 
+    /** check to see if the option provided is a valid option for the menu (case sensitive)
+     *
+     * @param selectedOption, a string representing the selected option by the user
+     * @return a boolean representing if the provided option exists for the menu
+     */
     public boolean isValidOption(String selectedOption){
         return (getMenuItemForChoice(selectedOption) != null);
     }
 
+    /** prompts the user for a choice and presenting the default if present using standard language
+     *
+     * @return a string representing the user choice
+     */
     public String promptForChoice(){
         if (this.defaultValue!=null) {
             return promptForChoice("Choose an option ["+this.defaultValue+"]: ");
@@ -123,6 +192,11 @@ public class OptionMenu {
         }
     }
 
+    /** prompts the user for their choice given a specific prompt passed to the method
+     *
+     * @param prompt, a string representing the prompt to present to the user
+     * @return a string representing the input from the user
+     */
     public String promptForChoice(String prompt){
         Scanner keyboard = new Scanner(System.in);
         System.out.print("\n"+prompt);
@@ -137,12 +211,22 @@ public class OptionMenu {
 
     }
 
+    /** get the data value for a specific menu option
+     *
+     * @param option, a string representing the menu item to query
+     * @return a string representing the data value of the associated menu item (if found), otherwise null
+     */
     public String getDataValueForOption(String option){
         MenuItem selectedItem = getMenuItemForChoice(option);
         if (selectedItem != null) return selectedItem.dataValue();
         return null;
     }
 
+    /** return a MenuItem for a given user choice
+     *
+     * @param choiceValue, a string representing the users choice
+     * @return a MenuItem for the choice, or null if none found
+     */
     private MenuItem getMenuItemForChoice(String choiceValue){
         for(MenuItem menuItem : menuItems){
             if (menuItem.choiceValue().equals(choiceValue)) return menuItem;
