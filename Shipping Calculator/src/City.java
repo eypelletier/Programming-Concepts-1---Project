@@ -47,6 +47,8 @@ public enum City {
         return (this.code | cityR.code);
     }
 
+    public int getCityCode(){ return this.code; }
+
     /**
      * toString method implementation returning just the name of the city for convenience.
      */

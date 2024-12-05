@@ -3,6 +3,8 @@ import helpers.OptionMenu;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.util.Random;
 
 public class ShipmentBuilder {
     public static Shipment buildShipment() {
@@ -40,6 +42,7 @@ public class ShipmentBuilder {
         assignShipmentDestination(ship);
         assignShipmentModality(ship);
         assignShipmentPriority(ship);
+        assignShipmentTrackingNumber(ship);
     }
 
     public static void assignShipmentLabel(Shipment ship) {
@@ -63,16 +66,21 @@ public class ShipmentBuilder {
     }
 
     public static void assignShipmentOrigin(Shipment ship) {
-        Scanner keyboard = new Scanner(System.in);
-        System.out.println("Please select the origin of the shipment:");
-        OptionMenu originMenu = new OptionMenu();
-        originMenu.addMenuOption("1", "Montreal")
-                .addMenuOption("2", "Toronto")
-                .addMenuOption("3", "Vancouver");
-        System.out.printf("\n%s\n", originMenu.menuAsString(true));
-        System.out.print("Choice: ");
-        String originMenuChoice = keyboard.nextLine();
-        originMenu.isValidOption(originMenuChoice);
+        OptionMenu originMenu;
+        String originMenuChoice;
+        boolean validChoice = false;
+        do {
+            System.out.print("\nPlease select the origin of the shipment:");
+            originMenu = new OptionMenu();
+            originMenu.addMenuOption("1", "Montreal")
+                    .addMenuOption("2", "Toronto")
+                    .addMenuOption("3", "Vancouver");
+            System.out.printf("\n%s", originMenu.menuAsString(true));
+            originMenuChoice = originMenu.promptForChoice();
+            validChoice = originMenu.isValidOption(originMenuChoice);
+            System.out.println();
+        }
+        while (!validChoice);
         switch (originMenuChoice) {
             case "1":
                 ship.setOrigin(City.MONTREAL);
@@ -87,16 +95,20 @@ public class ShipmentBuilder {
     }
 
     public static void assignShipmentDestination(Shipment ship) {
-        Scanner keyboard = new Scanner(System.in);
-        System.out.println("Please select the destination for the shipment:");
-        OptionMenu destinationMenu = new OptionMenu();
-        destinationMenu.addMenuOption("1", "Montreal")
-                .addMenuOption("2", "Toronto")
-                .addMenuOption("3", "Vancouver");
-        System.out.printf("\n%s\n", destinationMenu.menuAsString(true));
-        System.out.print("Choice: ");
-        String destinationMenuChoice = keyboard.nextLine();
-        destinationMenu.isValidOption(destinationMenuChoice);
+        OptionMenu destinationMenu;
+        String destinationMenuChoice;
+        boolean validChoice = false;
+        do {
+            System.out.print("\nPlease select the destination for the shipment:");
+            destinationMenu = new OptionMenu();
+            destinationMenu.addMenuOption("1", "Montreal")
+                    .addMenuOption("2", "Toronto")
+                    .addMenuOption("3", "Vancouver");
+            System.out.printf("\n%s", destinationMenu.menuAsString(true));
+            destinationMenuChoice = destinationMenu.promptForChoice();
+            validChoice = destinationMenu.isValidOption(destinationMenuChoice);
+        }
+        while (!validChoice);
         switch (destinationMenuChoice) {
             case "1":
                 ship.setDestination(City.MONTREAL);
@@ -111,19 +123,22 @@ public class ShipmentBuilder {
     }
 
     public static void assignShipmentModality(Shipment ship) {
-        Scanner keyboard = new Scanner(System.in);
-        System.out.println("Please select the method of transportation:");
+        OptionMenu transportationMenu;
+        String transportationMenuChoice;
+        boolean validChoice = false;
+        do {
+            System.out.print("\nPlease select the method of transportation:");
+            transportationMenu = new OptionMenu();
+            transportationMenu.addMenuOption("1", "Truck")
+                    .addMenuOption("2", "Rail")
+                    .addMenuOption("3", "Sea")
+                    .addMenuOption("4", "Air");
 
-        OptionMenu transportationMenu = new OptionMenu();
-        transportationMenu.addMenuOption("1", "Truck")
-                .addMenuOption("2", "Rail")
-                .addMenuOption("3", "Sea")
-                .addMenuOption("4", "Air");
-
-        System.out.printf("\n%s\n", transportationMenu.menuAsString(true));
-        System.out.print("Choice: ");
-        String transportationMenuChoice = keyboard.nextLine();
-        transportationMenu.isValidOption(transportationMenuChoice);
+            System.out.printf("\n%s", transportationMenu.menuAsString(true));
+            transportationMenuChoice = transportationMenu.promptForChoice();
+            validChoice = transportationMenu.isValidOption(transportationMenuChoice);
+        }
+        while (!validChoice);
         switch (transportationMenuChoice) {
             case "1":
                 ship.setShippingMethod(DeliveryModality.TRUCK);
@@ -141,15 +156,19 @@ public class ShipmentBuilder {
     }
 
     static public void assignShipmentPriority(Shipment ship) {
-        Scanner keyboard = new Scanner(System.in);
-        System.out.println("Please select a priority for the shipment:");
-        OptionMenu priorityMenu = new OptionMenu();
-        priorityMenu.addMenuOption("1", "Standard")
-                .addMenuOption("2", "Express");
-        System.out.printf("\n%s\n", priorityMenu.menuAsString(true));
-        System.out.print("Choice: ");
-        String priorityMenuChoice = keyboard.nextLine();
-        priorityMenu.isValidOption(priorityMenuChoice);
+        OptionMenu priorityMenu;
+        String priorityMenuChoice;
+        boolean validChoice = false;
+        do {
+            System.out.print("\nPlease select a priority for the shipment:");
+            priorityMenu = new OptionMenu();
+            priorityMenu.addMenuOption("1", "Standard")
+                    .addMenuOption("2", "Express");
+            System.out.printf("\n%s", priorityMenu.menuAsString(true));
+            priorityMenuChoice = priorityMenu.promptForChoice();
+            validChoice = priorityMenu.isValidOption(priorityMenuChoice);
+        }
+        while (!validChoice);
         switch (priorityMenuChoice) {
             case "1":
                 ship.setShippingSpeed(DeliveryStandard.STANDARD);
@@ -160,6 +179,21 @@ public class ShipmentBuilder {
         }
     }
 
+    public static void assignShipmentTrackingNumber(Shipment ship) {
+        LocalDate currentDate = LocalDate.now();
+        int year = currentDate.getYear(), month = currentDate.getMonthValue(), day = currentDate.getDayOfMonth(),
+                originCode = ship.getOrigin().getCityCode(), destinationCode = ship.getDestination().getCityCode();
+
+        // Create a random number generator
+        Random random = new Random();
+        int randomNumber = random.nextInt(99) + 1; // Generate a random number between 1 and 99
+
+        // Format the tracking number as: YYYYMMDD-originCode-destinationCode-random
+        String trackingNumber = String.format("TRK%04d%02d%02d%02d%02d%02d",
+                year, month, day, originCode, destinationCode, randomNumber);
+        ship.setShipmentTrackingNumber(trackingNumber);
+    }
+
     public static void displayShipmentSummary(Shipment ship) {
         // Display shipment summary
         System.out.println("\n--- Shipment Summary ---");
@@ -168,6 +202,7 @@ public class ShipmentBuilder {
         System.out.println("Destination: " + ship.getDestination());
         System.out.println("Shipping Method: " + ship.getShippingMethod());
         System.out.println("Shipping Speed: " + ship.getShippingSpeed());
+        System.out.println("Tracking number: " + ship.getShipmentTrackingNumber());
 
         // Display package information
         System.out.println("\n--- Packages ---");
@@ -178,8 +213,6 @@ public class ShipmentBuilder {
             System.out.println("Weight: " + pkg.getWeight() + " kg");
             System.out.println("-------------------");
         }
-        //TODO Generate and store the tracking number for the shipment.
-        System.out.println("Tracking number: TRK1234567890");
     }
 
     public static void displayShipmentCost(Shipment ship) {

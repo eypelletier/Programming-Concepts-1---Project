@@ -2,7 +2,7 @@ import java.util.*;
 import java.text.SimpleDateFormat;
 
 public class Shipment {
-    private String name;
+    private String name, shipmentTrackingNumber;
     private City origin;
     private City destination;
     private DeliveryModality shippingMethod;
@@ -24,6 +24,7 @@ public class Shipment {
         this.shippingMethod = null;
         this.shippingSpeed = null;
         shipmentPackages = new ArrayList<>();
+        this.shipmentTrackingNumber = null;
     }
 
     public String getName() {
@@ -60,6 +61,11 @@ public class Shipment {
 
         return shipmentPackages.get(packageNum);
     }
+
+    public String getShipmentTrackingNumber() {
+        return shipmentTrackingNumber;
+    }
+
     public void setName(String Name) {
         this.name = Name;
     }
@@ -80,6 +86,10 @@ public class Shipment {
         this.shippingSpeed = shippingSpeed;
     }
 
+    public void setShipmentTrackingNumber(String trackingNumber) {
+        this.shipmentTrackingNumber = trackingNumber;
+    }
+
     public void addToPackages(Package pack) {
         shipmentPackages.add(pack);
     }
@@ -88,21 +98,6 @@ public class Shipment {
         for (Package pack : shipmentPackages) {
             System.out.println(pack);
         }
-    }
-
-    // Method to generate tracking number
-    public String generateTrackingNumber() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        String date = dateFormat.format(new Date()); // Get current date in yyyyMMdd format
-
-        Random rand = new Random();
-
-        // Get origin and destination location codes
-        String originCode = origin.getTrackingCode();
-        String destinationCode = destination.getTrackingCode();
-
-        // Generate the tracking number using the current date and the location codes
-        return "TRK" + date + originCode + destinationCode + rand.nextInt(100);
     }
 
     // Method to calculate shipping cost
