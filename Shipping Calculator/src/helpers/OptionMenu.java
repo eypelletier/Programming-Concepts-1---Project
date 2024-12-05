@@ -265,7 +265,7 @@ public class OptionMenu {
         return null;
     }
 
-    //Possible changes
+    //Possible changes follow below
     public OptionMenu withDisabled(String[] disabledOptions){
         this.disabledItems.clear();
         disabledItems.addAll(Arrays.asList(disabledOptions));
@@ -275,5 +275,9 @@ public class OptionMenu {
     public boolean isOptionDisabled(String optionChoiceValue){
         return (this.disabledItems.contains(optionChoiceValue));
 
+    }
+
+    public OptionValidity getLastValidityCheckResult() {
+        return lastValidityCheckResult;
     }
 }
