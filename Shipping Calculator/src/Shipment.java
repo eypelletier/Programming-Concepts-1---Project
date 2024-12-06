@@ -130,6 +130,8 @@ public class Shipment {
         }
 
         surcharge += shippingSpeed.getSurcharge();
+        surcharge += shippingMethod.getSurcharge();
+        surcharge += getWeightSurcharge();
 
         return surcharge;
     }
