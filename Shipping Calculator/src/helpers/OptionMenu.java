@@ -162,8 +162,13 @@ public class OptionMenu {
                 disabledStyle = "\033[31m";
             }
 
-            //Style if default value present and option isn't disabled
-            String defaultValueStyle = (defaultValue != null && disabledStyle.isEmpty() ) ? "\033[34m" : "";
+            //Check to see if current menuItem is the default value
+            boolean defaultItemFlag = (defaultValue != null && defaultValue.equals(menuItem.choiceValue));
+
+            //Apply the default value style if the menuItem is not disabled, and is the default item
+            String defaultValueStyle = ( defaultItemFlag && disabledStyle.isEmpty() ) ? "\033[34m" : "";
+
+            //render the string representation of the menu item
             menuString.append(defaultValueStyle).append(disabledStyle).append(optionString).append(RESET).append(newLine);
         }
         return menuString.toString();
