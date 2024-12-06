@@ -294,13 +294,13 @@ public class ShipmentBuilder {
     }
 
     public static void displayShipmentCost(Shipment ship) {
-        System.out.println("\n--- Shipment Cost ---");
-        System.out.println("Base Shipping Rate: " + ship.getBaseRate());
-        System.out.println("Shipment Weight Surcharge: " + ship.getWeightSurcharge());
-        System.out.println("Shipment Method Surcharge: " + ship.getModalitySurcharge());
-        System.out.println("Shipment Priority Surcharge:  " + ship.getPrioritySurcharge());
+        System.out.println("--- Shipment Cost ---");
+        System.out.printf("Base Shipping Rate:           $%.2f\n",ship.getBaseRate());
+        System.out.printf("Shipment Weight Surcharge:    $%.2f\n",ship.getWeightSurcharge());
+        System.out.printf("Shipment Method Surcharge:    $%.2f\n",ship.getModalitySurcharge());
+        System.out.printf("Shipment Priority Surcharge:  $%.2f\n",ship.getPrioritySurcharge());
         System.out.println("-------------------");
-        System.out.println("Total cost for shipment: " + ship.calculateShippingCost());
+        System.out.printf("Total cost for shipment:      $%.2f\n",ship.calculateShippingCost());
 
     }
 
@@ -459,7 +459,7 @@ public class ShipmentBuilder {
 
     public static String createPackageSummary(Package pkg) {
         StringBuilder sbTemp = new StringBuilder();
-        String DIVIDER = "-------------------";
+        String DIVIDER = "-------------------\n";
         sbTemp.append("Package Label: ").append(pkg.getLabel()).append("\n");
         sbTemp.append("Goods Category: ").append(pkg.getGoodsClassification()).append("\n");
         sbTemp.append("Dimensions (LxWxH): ").append(pkg.getLength()).append(" x ")
