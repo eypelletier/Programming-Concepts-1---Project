@@ -1,34 +1,118 @@
 import helpers.OptionMenu;
 import helpers.FileUtils;
 
-import java.util.EnumSet;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.time.LocalDate;
-import java.util.Random;
 
 
 public class ShipmentBuilder {
+    private static Map<Package,String> packageProblemNotes = new HashMap<>();
+
     public static Shipment buildShipment() {
         Shipment ship = createShipment(new Shipment());
-        System.out.println("---DEBUG---");
-        dummyValidation(ship);
-
         return ship;
     }
 
-    public static void dummyValidation(Shipment ship) {
+    public static boolean validateShipment(Shipment ship) {
+        Scanner keyboard = new Scanner(System.in);
+
         Map<Package, EnumSet<Shipment.PackageProblems>> rejectedPackages = ship.getRejectedPackages();
-        System.out.println("Count of problematic packages: " + rejectedPackages.size());
+        System.out.println("\nPerforming final shipment check...");
+        boolean shipmentCleared = false;
 
-        for (var entry : rejectedPackages.entrySet()) {
+        int problemPackagesCount = rejectedPackages.size();
+        if (problemPackagesCount > 0) {
+            System.out.println("\n\n\033[91m-=- WARNING! PROBLEMATIC PACKAGES DETECTED -=-\033[39m");
+            System.out.println("Your shipment cannot be processed until all problems have been resolved.");
+            System.out.printf("Count of problematic packages: %s\n",problemPackagesCount);
 
-            EnumSet<Shipment.PackageProblems> packageProblems = entry.getValue();
-            System.out.println("Package: " + entry.getKey().getLabel());
-            if (packageProblems.contains(Shipment.PackageProblems.GOODS_RESTRICTED_FOR_MODALITY)) {
-                System.out.println("Oh my god, we can't carry this package it is TOO dangerous!");
-                //dummyModifyPackage(entry.getKey());
+            //Keep track of general problems across problematic packages
+            EnumSet<Shipment.PackageProblems> generalProblems = EnumSet.noneOf(Shipment.PackageProblems.class);
+
+            for (var entry : rejectedPackages.entrySet()) {
+                EnumSet<Shipment.PackageProblems> packageProblems = entry.getValue();
+                System.out.println("[x] Package: " + entry.getKey().getLabel());
+                reportPackageProblemDetails(packageProblems);
+
+                if (packageProblems.contains(Shipment.PackageProblems.MISMATCH_MODALITY)) generalProblems.add(Shipment.PackageProblems.MISMATCH_MODALITY);
+                if (packageProblems.contains(Shipment.PackageProblems.MISMATCH_STANDARD)) generalProblems.add(Shipment.PackageProblems.MISMATCH_STANDARD);
+
             }
+            System.out.println("\n\033[91m Shipping errors must be corrected. \033[39m\n");
+            System.out.println("<press enter to continue>");
+            keyboard.nextLine();
+        } else {
+            System.out.println("Your shipment meets all requirements.");
+            shipmentCleared = true;
+
+        }
+        return shipmentCleared;
+    }
+
+    private static void evaluatePackageConflicts(Shipment ship) {
+        Map<Package, EnumSet<Shipment.PackageProblems>> rejectedPackages = ship.getRejectedPackages();
+
+        //Clear any existing packageProblemNotes
+        packageProblemNotes.clear();
+
+        //Re-populate package problem notes
+        for (var entry : rejectedPackages.entrySet()) {
+            EnumSet<Shipment.PackageProblems> packageProblems = entry.getValue();
+            Package problemPackage = entry.getKey();
+            String problemNotes = itemizePackageProblems(packageProblems);
+            packageProblemNotes.put(problemPackage, problemNotes);
+        }
+    }
+
+    private static String itemizePackageProblems(EnumSet<Shipment.PackageProblems> packageProblems){
+        StringBuilder problemListString = new StringBuilder();
+        problemListString.append("\033[1m[Conflicts Detected]\033[22m\n");
+        //Error messages for the given package
+        if (packageProblems.contains(Shipment.PackageProblems.GOODS_RESTRICTED_FOR_MODALITY)) {
+            problemListString.append("\033[1mTransport Method:\033[22m Restricted goods category.\n");
+        }
+
+        if (packageProblems.contains(Shipment.PackageProblems.TOO_HEAVY_FOR_MODALITY)){
+            problemListString.append("\033[1mTransport Method:\033[22m Too heavy.\n");
+        }
+
+        if (packageProblems.contains(Shipment.PackageProblems.TOO_LARGE_FOR_MODALITY)){
+            problemListString.append("\033[1mTransport Method:\033[22m Too large.\n");
+        }
+
+        //Error Messages related to shipment standard
+        if (packageProblems.contains(Shipment.PackageProblems.TOO_HEAVY_FOR_STANDARD)){
+            problemListString.append("\033[1mStandard:\033[22m Too heavy.\n");
+        }
+
+        if (packageProblems.contains(Shipment.PackageProblems.TOO_LARGE_FOR_STANDARD)){
+            problemListString.append("\033[1mStandard:\033[22m Too large.\n");
+        }
+
+        return problemListString.toString();
+    }
+
+    private static void reportPackageProblemDetails(EnumSet<Shipment.PackageProblems> packageProblems) {
+        //Detailed error messages for the designated modality
+        if (packageProblems.contains(Shipment.PackageProblems.GOODS_RESTRICTED_FOR_MODALITY)) {
+            System.out.println("\tThe package cannot be carried via the designated method as it is TOO dangerous.");
+        }
+
+        if (packageProblems.contains(Shipment.PackageProblems.TOO_HEAVY_FOR_MODALITY)){
+            System.out.println("\tThe package cannot be carried by the designated method as it is TOO heavy.");
+        }
+
+        if (packageProblems.contains(Shipment.PackageProblems.TOO_LARGE_FOR_MODALITY)){
+           System.out.println("\tThe package is too large to be carried by the designated method.");
+        }
+
+        //Detailed Error Messages related to shipment standard
+        if (packageProblems.contains(Shipment.PackageProblems.TOO_HEAVY_FOR_STANDARD)){
+            System.out.println("\tThe package is too heavy to be carried at the given shipment standard.");
+        }
+
+        if (packageProblems.contains(Shipment.PackageProblems.TOO_LARGE_FOR_STANDARD)){
+            System.out.println("\tThe package is too large to be carried at the given shipment standard.");
         }
     }
 
@@ -81,6 +165,7 @@ public class ShipmentBuilder {
             validChoice = originMenu.isValidOption(originMenuChoice);
         }
         while (!validChoice);
+
         switch (originMenuChoice) {
             case "1":
                 ship.setOrigin(City.MONTREAL);
@@ -191,6 +276,7 @@ public class ShipmentBuilder {
     }
 
     public static void displayShipmentSummary(Shipment ship) {
+        evaluatePackageConflicts(ship);
         // Display shipment summary
         System.out.println("\n--- Shipment Summary ---");
         System.out.println("Shipment Label: " + ship.getName());
@@ -203,11 +289,7 @@ public class ShipmentBuilder {
         // Display package information
         System.out.println("\n--- Packages ---");
         for (Package pkg : ship.getPackages()) {
-            System.out.println("Package Label: " + pkg.getLabel());
-            System.out.println("Goods Category: " + pkg.getGoodsClassification());
-            System.out.println("Dimensions (HxWxL): " + pkg.getHeight() + " x " + pkg.getWidth() + " x " + pkg.getLength() + " cm");
-            System.out.println("Weight: " + pkg.getWeight() + " kg");
-            System.out.println("-------------------");
+            System.out.println(createPackageSummary(pkg));
         }
     }
 
@@ -227,10 +309,8 @@ public class ShipmentBuilder {
         System.out.println("--- Packages in Shipment ---");
         int packageIndex = 1;
         for (Package pkg : ship.getPackages()) {
-            System.out.println(packageIndex + ". Package Label: " + pkg.getLabel());
-            System.out.println("   Goods Category: " + pkg.getGoodsClassification());
-            System.out.println("   Dimensions (HxWxL): " + pkg.getHeight() + " x " + pkg.getWidth() + " x " + pkg.getLength() + " cm");
-            System.out.println("   Weight: " + pkg.getWeight() + " kg");
+            System.out.printf("[Package #%s]\n",packageIndex);
+            System.out.println(createPackageSummary(pkg));
             packageIndex++;
         }
 
@@ -261,24 +341,24 @@ public class ShipmentBuilder {
         displayShipmentSummary(shipment);
 
         String modifyMenuChoice;
-        do {
+        OptionMenu modifyMenu = new OptionMenu();
+        String[][] modifyMenuOptions = {{"1", "Yes"}, {"2", "No"}};
+        modifyMenu.addAllMenuOptions(modifyMenuOptions);
+
+        boolean willModifyShipment = true;
+        while (willModifyShipment) {
             System.out.println("Would you like to modify the shipment?");
-            OptionMenu modifyMenu = new OptionMenu();
-            String[][] modifyMenuOptions = {{"1", "Yes"}, {"2", "No"}};
-            modifyMenu.addAllMenuOptions(modifyMenuOptions);
             System.out.printf("\n%s\n", modifyMenu.withTitle("Modify Shipment").menuAsString());
             modifyMenuChoice = modifyMenu.promptForChoice();
-            modifyMenu.isValidOption(modifyMenuChoice);
 
-            if (modifyMenuChoice.equals("1")) {
+            willModifyShipment = modifyMenuChoice.equals("1");
+            if (willModifyShipment) {
                 modifyShipmentDetails(shipment);
             }
-        } while (modifyMenuChoice.equals("1"));  // Continue looping if user selects "1" (Yes)
-
+        }
         System.out.println("No modifications requested.");
-        displayShipmentCost(shipment);
-        System.out.println();
-        //endProgram();
+
+        finalizeShipment(shipment);
     }
 
     // Method to handle modifying specific shipment details
@@ -320,6 +400,18 @@ public class ShipmentBuilder {
         displayShipmentSummary(shipment);
     }
 
+    public static void finalizeShipment(Shipment shipment) {
+        boolean didValidate = validateShipment(shipment);
+
+        if (didValidate) {
+        displayShipmentSummary(shipment);
+        displayShipmentCost(shipment);
+        System.out.println();
+        } else {
+            modifyShipment(shipment);
+        }
+    }
+
     //Method to print the summary and costs to a file
     public static void exportShipmentDetails(Shipment ship) {
         // File path location
@@ -340,12 +432,7 @@ public class ShipmentBuilder {
         // Append package information to the StringBuilder
         sbTemp.append("\n--- Packages ---\n");
         for (Package pkg : ship.getPackages()) {
-            sbTemp.append("Package Label: ").append(pkg.getLabel()).append("\n");
-            sbTemp.append("Goods Category: ").append(pkg.getGoodsClassification()).append("\n");
-            sbTemp.append("Dimensions (HxWxL): ").append(pkg.getHeight()).append(" x ")
-                    .append(pkg.getWidth()).append(" x ").append(pkg.getLength()).append(" cm\n");
-            sbTemp.append("Weight: ").append(pkg.getWeight()).append(" kg\n");
-            sbTemp.append("-------------------\n");
+            sbTemp.append(createPackageSummary(pkg));
         }
 
         // Append ship cost to the StringBuilder
@@ -368,5 +455,22 @@ public class ShipmentBuilder {
             System.out.println("There was an error saving the shipment details.");
         }
 
+    }
+
+    public static String createPackageSummary(Package pkg) {
+        StringBuilder sbTemp = new StringBuilder();
+        String DIVIDER = "-------------------";
+        sbTemp.append("Package Label: ").append(pkg.getLabel()).append("\n");
+        sbTemp.append("Goods Category: ").append(pkg.getGoodsClassification()).append("\n");
+        sbTemp.append("Dimensions (LxWxH): ").append(pkg.getLength()).append(" x ")
+                .append(pkg.getWidth()).append(" x ").append(pkg.getHeight()).append(" cm\n");
+        sbTemp.append("Weight: ").append(pkg.getWeight()).append(" kg\n");
+        if (packageProblemNotes.containsKey(pkg)){
+            sbTemp.append("\033[33m"+packageProblemNotes.get(pkg)+"\033[0m");
+        }
+
+        sbTemp.append(DIVIDER);
+
+        return sbTemp.toString();
     }
 }
