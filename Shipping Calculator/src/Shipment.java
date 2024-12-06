@@ -10,6 +10,8 @@ public class Shipment {
     private final ArrayList<Package> shipmentPackages;
 
     public enum PackageProblems {
+        MISMATCH_MODALITY,
+        MISMATCH_STANDARD,
         TOO_HEAVY_FOR_MODALITY,
         TOO_HEAVY_FOR_STANDARD,
         TOO_LARGE_FOR_MODALITY,
@@ -146,23 +148,28 @@ public class Shipment {
 
             //Check for problems related to DeliveryStandard
             if (!shippingSpeed.meetsDimensions(pkg.getLength(), pkg.getWidth(), pkg.getHeight())) {
+                problems.add(PackageProblems.MISMATCH_STANDARD);
                 problems.add(PackageProblems.TOO_LARGE_FOR_STANDARD);
             }
 
             if (!shippingSpeed.meetsWeight(pkg.getWeight())) {
+                problems.add(PackageProblems.MISMATCH_STANDARD);
                 problems.add(PackageProblems.TOO_HEAVY_FOR_STANDARD);
             }
 
             //Check for problems related to DeliveryModality
             if (pkg.getLargestDimension() > shippingMethod.getMaxAllowableDimension()) {
+                problems.add(PackageProblems.MISMATCH_MODALITY);
                 problems.add(PackageProblems.TOO_LARGE_FOR_MODALITY);
             }
 
             if (pkg.getWeight() > shippingMethod.getMaxWeight()){
+                problems.add(PackageProblems.MISMATCH_MODALITY);
                 problems.add(PackageProblems.TOO_HEAVY_FOR_MODALITY);
             }
 
             if (!shippingMethod.canTransportGoodsCategory(pkg.getGoodsClassification())){
+                problems.add(PackageProblems.MISMATCH_MODALITY);
                 problems.add(PackageProblems.GOODS_RESTRICTED_FOR_MODALITY);
             }
 
