@@ -221,7 +221,7 @@ public class OptionMenu {
      * @return a string representing the user choice
      */
     public String promptForChoice(){
-        if (this.defaultValue!=null) {
+        if (this.defaultValue!=null && !disabledItems.contains(this.defaultValue)) {
             return promptForChoice("Choose an option ["+this.defaultValue+"]: ");
         } else {
             return promptForChoice("Choose an option: ");
