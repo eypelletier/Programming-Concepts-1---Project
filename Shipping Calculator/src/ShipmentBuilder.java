@@ -289,7 +289,7 @@ public class ShipmentBuilder {
         // Display package information
         System.out.println("\n--- Packages ---");
         for (Package pkg : ship.getPackages()) {
-            System.out.println(createPackageSummary(pkg));
+            System.out.print(createPackageSummary(pkg));
         }
     }
 
