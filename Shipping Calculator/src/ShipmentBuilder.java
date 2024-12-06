@@ -286,7 +286,7 @@ public class ShipmentBuilder {
         System.out.println("Which part of the shipment would you like to modify?");
         OptionMenu shipModifyMenu = new OptionMenu();
         String[][] shipModifyMenuOptions = {{"1", "Label"}, {"2", "Packages"}, {"3", "Origin"},
-                {"4", "Destination"}, {"5", "Priority"}};
+                {"4", "Destination"}, {"5", "Priority"},{"6","Method"}};
         shipModifyMenu.addAllMenuOptions(shipModifyMenuOptions);
         System.out.printf("\n%s\n", shipModifyMenu.withTitle("Modification Choice").menuAsString());
         String shipModifyMenuChoice = shipModifyMenu.promptForChoice();
@@ -307,6 +307,9 @@ public class ShipmentBuilder {
                 break;
             case "5":
                 assignShipmentPriority(shipment);
+                break;
+            case "6":
+                assignShipmentModality(shipment);
                 break;
             default:
                 System.out.println("Invalid option selected.");
