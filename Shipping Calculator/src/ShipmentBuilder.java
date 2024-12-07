@@ -309,7 +309,7 @@ public class ShipmentBuilder {
         System.out.printf("Shipment Method Surcharge:    $%.2f\n", ship.getModalitySurcharge());
         System.out.printf("Shipment Priority Surcharge:  $%.2f\n", ship.getPrioritySurcharge());
         System.out.println("-------------------");
-        System.out.printf("Total cost for shipment:      $%.2f\n", ship.calculateShippingCost());
+        System.out.printf("Total cost for shipment:      $%.2f\n", ship.calculateTotalShippingCost());
 
     }
 
@@ -330,11 +330,14 @@ public class ShipmentBuilder {
         boolean validUserChoice = false;
 
         while (!validUserChoice) {
-            System.out.print("Please enter the number of the package you would like to modify: ");
-            packageChoice = Integer.parseInt(keyboard.nextLine());
-
-            validUserChoice = (packageChoice >= 1) && (packageChoice <= packageCount);
-            if (!validUserChoice) System.out.println("Invalid package choice. Please try again.");
+            try {
+                System.out.print("Please enter the number of the package you would like to modify: ");
+                packageChoice = Integer.parseInt(keyboard.nextLine());
+                validUserChoice = (packageChoice >= 1) && (packageChoice <= packageCount);
+                if (!validUserChoice) System.out.println("Invalid package choice. Please try again.");
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid package choice. Please try again.");
+            }
         }
 
         // Retrieve the selected package
@@ -463,7 +466,7 @@ public class ShipmentBuilder {
         sbTemp.append("Shipment Method Surcharge: ").append(ship.getModalitySurcharge()).append("\n");
         sbTemp.append("Shipment Priority Surcharge: ").append(ship.getPrioritySurcharge()).append("\n");
         sbTemp.append("-------------------\n");
-        sbTemp.append("Total cost for ship: ").append(ship.calculateShippingCost()).append("\n");
+        sbTemp.append("Total cost for ship: ").append(ship.calculateTotalShippingCost()).append("\n");
 
         // Save the string builder as a string
         String shipmentDetails = sbTemp.toString();
