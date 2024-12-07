@@ -494,7 +494,7 @@ public class ShipmentBuilder {
         String shipModifyMenuChoice = "";
         int attempts = 0;
 
-        // limits the user to 5 attempts of menu choice
+        // prompt the user for their choice, re-display the full menu after every fifth failed attempt
         while (!validMenuChoice) {
             if (attempts++%5 ==0){
                 System.out.printf("\n%s\n", shipModifyMenu.withTitle("Modification Choice").menuAsString());
