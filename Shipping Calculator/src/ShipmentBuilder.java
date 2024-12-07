@@ -140,10 +140,17 @@ public class ShipmentBuilder {
 
     public static void createShipmentPackages(Shipment ship) {
         Scanner keyboard = new Scanner(System.in);
-        System.out.print("How many packages would you like to ship: ");
-        int numPackages = keyboard.nextInt();
-        keyboard.nextLine();
-
+        boolean validNumber = false;
+        int numPackages = 0;
+        while (!validNumber) {
+            System.out.print("How many packages would you like to ship: ");
+            try {
+                numPackages = Integer.parseInt(keyboard.nextLine());
+                validNumber = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number.");
+            }
+        }
         for (int i = 0; i < numPackages; i++) {
             System.out.println("---- Package #" + (i + 1) + " ----");
             Package newPackage = PackageBuilder.createPackage();
