@@ -1,15 +1,28 @@
 import helpers.OptionMenu;
-
 import java.util.Scanner;
 
+/** PackageBuilder is a helper class that supports the program flow and construction of package objects
+ *
+ */
 public class PackageBuilder {
+
+    /** Modes represents the current 'stateful' mode of the PackageBuilder,
+     *
+     */
     enum Modes {
         CREATE_MODE,
         EDIT_MODE,
     }
 
+    /** mode stores the current mode for the ProjectBuilder
+     *
+     */
     private static Modes mode;
 
+    /** creates a new package
+     *
+     * @return a package, the new package
+     */
     public static Package createPackage(){
         PackageBuilder.mode = Modes.CREATE_MODE;
         Package pkg = new Package();
@@ -17,12 +30,19 @@ public class PackageBuilder {
         return pkg;
     }
 
-
+    /** modify a package
+     *
+     * @param pkg, a Package representing the package to modify
+     */
     public static void modifyPackage(Package pkg){
         PackageBuilder.mode = Modes.EDIT_MODE;
         configurePackage(pkg);
     }
 
+    /** configure the passed package
+     *
+     * @param pkg, a Package representing the package to configure (or assemble)
+     */
     private static void configurePackage(Package pkg){
         assignPackageLabel(pkg);
         assignPackageDimensions(pkg);
@@ -30,6 +50,10 @@ public class PackageBuilder {
         assignPackageGoodsCategory(pkg);
     }
 
+    /** assign the label for the package
+     *
+     * @param pkg, a Package representing the package to set the label for
+     */
     public static void assignPackageLabel(Package pkg){
         Scanner keyboard = new Scanner(System.in);
         String currentLabel = pkg.getLabel();
@@ -54,6 +78,10 @@ public class PackageBuilder {
         pkg.setLabel(pkgLabel);
     }
 
+    /** assign the dimensions for the package
+     *
+     * @param pkg, a Package representing the package to assign the dimensions to
+     */
     public static void assignPackageDimensions(Package pkg){
         String userPromptStart = "Enter package dimensions ";
 
@@ -88,6 +116,14 @@ public class PackageBuilder {
         pkg.setHeight(pkgHeight);
     }
 
+    /** prompt the user for a non-negative double value for a package field
+     *  (TODO: excellent candidate for moving to a helper class/library)
+     *
+     * @param userPrompt, a string representing the prompt to display on the screen for input
+     * @param defaultValue, a double representing any default value to provide if response is simply
+     *                      a carriage return
+     * @return a double representing a valid value
+     */
     private static double retrievePackageDoubleInput(String userPrompt, double defaultValue){
         Scanner keyboard = new Scanner(System.in);
         boolean validInput = false;
@@ -125,6 +161,10 @@ public class PackageBuilder {
         return Double.parseDouble(userInput);
     }
 
+    /** assign the weight to a package
+     *
+     * @param pkg, a Package representing the package to assign the weight to
+     */
     public static void assignPackageWeight(Package pkg){
         StringBuilder userPrompt = new StringBuilder("Enter package weight (in kg)");
 
@@ -143,6 +183,10 @@ public class PackageBuilder {
         pkg.setWeight(pkgWeight);
     }
 
+    /** assign the GoodsCategory for the package
+     *
+     * @param pkg, a Package representing the package to assign a GoodsCategory for
+     */
     public static void assignPackageGoodsCategory(Package pkg){
         //Create menu for type of goods
         OptionMenu goodsTypeMenu = new OptionMenu();
@@ -168,6 +212,12 @@ public class PackageBuilder {
 
     }
 
+    /** prompt the user to choose a GoodsCategory
+     *
+     * @param userPrompt, a string representing the prompt to display to the user
+     * @param pkg, a package, representing the package to assign the GoodsCategory to
+     * @param goodsTypeMenu, an OptionMenu presenting the available goods categories
+     */
     private static void promptForGoodsCategory(String userPrompt, Package pkg, OptionMenu goodsTypeMenu){
         Scanner keyboard = new Scanner(System.in);
         boolean validUserOption = false;
