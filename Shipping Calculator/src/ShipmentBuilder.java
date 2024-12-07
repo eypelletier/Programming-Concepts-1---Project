@@ -4,15 +4,27 @@ import helpers.FileUtils;
 import java.util.*;
 import java.time.LocalDate;
 
-
+/**
+ * Class to handle the creation, validation, modification, and export of shipment details.
+ */
 public class ShipmentBuilder {
+    // HashMap to store problems detected in packages
     private static Map<Package, String> packageProblemNotes = new HashMap<>();
 
+    /**
+     * Builds and returns a new shipment.
+     * @return The newly created shipment.
+     */
     public static Shipment buildShipment() {
         Shipment ship = createShipment(new Shipment());
         return ship;
     }
 
+    /**
+     * Validates a shipment by checking for any problematic packages.
+     * @param ship The shipment to validate.
+     * @return True if the shipment is valid, false if there are issues to resolve.
+     */
     public static boolean validateShipment(Shipment ship) {
         Scanner keyboard = new Scanner(System.in);
 
@@ -51,6 +63,10 @@ public class ShipmentBuilder {
         return shipmentCleared;
     }
 
+    /**
+     * Evaluates the conflicts in the packages within a shipment and updates the problem notes.
+     * @param ship The shipment to evaluate.
+     */
     private static void evaluatePackageConflicts(Shipment ship) {
         Map<Package, EnumSet<Shipment.PackageProblems>> rejectedPackages = ship.getRejectedPackages();
 
@@ -66,6 +82,11 @@ public class ShipmentBuilder {
         }
     }
 
+    /**
+     * Converts a set of package problems into a readable string.
+     * @param packageProblems A set of problems associated with a package.
+     * @return A formatted string listing the problems.
+     */
     private static String itemizePackageProblems(EnumSet<Shipment.PackageProblems> packageProblems) {
         StringBuilder problemListString = new StringBuilder();
         problemListString.append("\033[1m[Conflicts Detected]\033[22m\n");
@@ -94,6 +115,10 @@ public class ShipmentBuilder {
         return problemListString.toString();
     }
 
+    /**
+     * Reports detailed error messages for a given set of package problems.
+     * @param packageProblems A set of problems associated with a package.
+     */
     private static void reportPackageProblemDetails(EnumSet<Shipment.PackageProblems> packageProblems) {
         //Detailed error messages for the designated modality
         if (packageProblems.contains(Shipment.PackageProblems.GOODS_RESTRICTED_FOR_MODALITY)) {
@@ -118,11 +143,20 @@ public class ShipmentBuilder {
         }
     }
 
+    /**
+     * Creates a new shipment and configures its properties.
+     * @param ship The shipment to configure.
+     * @return The configured shipment.
+     */
     public static Shipment createShipment(Shipment ship) {
         configureShipment(ship);
         return ship;
     }
 
+    /**
+     * Configures the shipment by setting various properties such as label, packages, origin, etc.
+     * @param ship The shipment to configure.
+     */
     public static void configureShipment(Shipment ship) {
         assignShipmentLabel(ship);
         createShipmentPackages(ship);
@@ -133,6 +167,10 @@ public class ShipmentBuilder {
         assignShipmentTrackingNumber(ship);
     }
 
+    /**
+     * Prompts the user to enter a label for the shipment.
+     * @param ship The shipment to assign a label to.
+     */
     public static void assignShipmentLabel(Shipment ship) {
         Scanner keyboard = new Scanner(System.in);
         System.out.print("Please enter a label for the shipment: ");
@@ -140,10 +178,15 @@ public class ShipmentBuilder {
         ship.setName(shipLabel);
     }
 
+    /**
+     * Allows the user to specify the number of packages and creates them for the shipment.
+     * @param ship The shipment to add packages to.
+     */
     public static void createShipmentPackages(Shipment ship) {
         Scanner keyboard = new Scanner(System.in);
         boolean validNumber = false;
         int numPackages = 0;
+        // validation for number of packages create to ensure positive number
         while (!validNumber) {
             System.out.print("How many packages would you like to ship: ");
             try {
@@ -153,6 +196,7 @@ public class ShipmentBuilder {
                 System.out.println("Please enter a valid number.");
             }
         }
+        // loop to create packages based on number of packages entered
         for (int i = 0; i < numPackages; i++) {
             System.out.println("---- Package #" + (i + 1) + " ----");
             Package newPackage = PackageBuilder.createPackage();
@@ -160,6 +204,10 @@ public class ShipmentBuilder {
         }
     }
 
+    /**
+     * Assigns the origin city to the shipment by prompting the user to select from a list of options.
+     * @param ship The shipment to assign an origin to.
+     */
     public static void assignShipmentOrigin(Shipment ship) {
         OptionMenu originMenu = new OptionMenu();
         String originMenuChoice;
@@ -167,6 +215,7 @@ public class ShipmentBuilder {
                 .addMenuOption("2", "Toronto")
                 .addMenuOption("3", "Vancouver");
         boolean validChoice;
+        // user selects origin from list
         do {
             System.out.print("\nPlease select the origin of the shipment:");
             System.out.printf("\n%s", originMenu.menuAsString(true));
@@ -175,6 +224,7 @@ public class ShipmentBuilder {
         }
         while (!validChoice);
 
+        // assign the origin to the shipment
         switch (originMenuChoice) {
             case "1":
                 ship.setOrigin(City.MONTREAL);
@@ -188,6 +238,10 @@ public class ShipmentBuilder {
         }
     }
 
+    /**
+     * Assigns a destination city to a shipment by presenting the user with a list of options.
+     *  @param ship The to assign a destination to.
+     */
     public static void assignShipmentDestination(Shipment ship) {
         OptionMenu destinationMenu = new OptionMenu();
         String destinationMenuChoice;
@@ -195,6 +249,7 @@ public class ShipmentBuilder {
                 .addMenuOption("2", "Toronto")
                 .addMenuOption("3", "Vancouver");
         boolean validChoice;
+        // user selects destination from a list
         do {
             System.out.print("\nPlease select the destination for the shipment:");
             System.out.printf("\n%s", destinationMenu.menuAsString(true));
@@ -202,6 +257,8 @@ public class ShipmentBuilder {
             validChoice = destinationMenu.isValidOption(destinationMenuChoice);
         }
         while (!validChoice);
+
+        // assign the destination to the shipment
         switch (destinationMenuChoice) {
             case "1":
                 ship.setDestination(City.MONTREAL);
@@ -215,6 +272,10 @@ public class ShipmentBuilder {
         }
     }
 
+    /**
+     * Assigns the transport modality (method of transportation) for the shipment.
+     * @param ship The shipment to assign a modality to.
+     */
     public static void assignShipmentModality(Shipment ship) {
         OptionMenu transportationMenu = new OptionMenu();
         String transportationMenuChoice;
@@ -223,6 +284,7 @@ public class ShipmentBuilder {
                 .addMenuOption("3", "Sea")
                 .addMenuOption("4", "Air");
         boolean validChoice;
+        // user selects the modality (method) of transportation
         do {
             System.out.print("\nPlease select the method of transportation:");
             System.out.printf("\n%s", transportationMenu.menuAsString(true));
@@ -230,6 +292,8 @@ public class ShipmentBuilder {
             validChoice = transportationMenu.isValidOption(transportationMenuChoice);
         }
         while (!validChoice);
+
+        // assign the modality to the shipment
         switch (transportationMenuChoice) {
             case "1":
                 ship.setShippingMethod(DeliveryModality.TRUCK);
@@ -246,12 +310,18 @@ public class ShipmentBuilder {
         }
     }
 
+    /**
+     * Assigns the priority of shipment handling.
+     * @param ship The shipment to assign a priority to.
+     */
     static public void assignShipmentPriority(Shipment ship) {
         OptionMenu priorityMenu = new OptionMenu();
         String priorityMenuChoice;
         priorityMenu.addMenuOption("1", "Standard")
                 .addMenuOption("2", "Express");
         boolean validChoice;
+
+        // user selects the standard (priority) for the shipment
         do {
             System.out.print("\nPlease select a priority for the shipment:");
             System.out.printf("\n%s", priorityMenu.menuAsString(true));
@@ -259,6 +329,8 @@ public class ShipmentBuilder {
             validChoice = priorityMenu.isValidOption(priorityMenuChoice);
         }
         while (!validChoice);
+
+        // assign the standard to the shipment
         switch (priorityMenuChoice) {
             case "1":
                 ship.setShippingSpeed(DeliveryStandard.STANDARD);
@@ -269,21 +341,33 @@ public class ShipmentBuilder {
         }
     }
 
+    /**
+     * Generates and assigns a tracking number to the shipment.
+     * @param ship The shipment to assign a tracking number to.
+     */
     public static void assignShipmentTrackingNumber(Shipment ship) {
         LocalDate currentDate = LocalDate.now();
         int year = currentDate.getYear(), month = currentDate.getMonthValue(), day = currentDate.getDayOfMonth(),
                 originCode = ship.getOrigin().getCityCode(), destinationCode = ship.getDestination().getCityCode();
 
-        // Create a random number generator
+        // generate a random number
         Random random = new Random();
         int randomNumber = random.nextInt(99) + 1; // Generate a random number between 1 and 99
 
         // Format the tracking number as: TRK+YYYYMMDD+originCode+destinationCode+random
         String trackingNumber = String.format("TRK%04d%02d%02d%02d%02d%02d",
                 year, month, day, originCode, destinationCode, randomNumber);
+
+        // assign the tracking number
         ship.setShipmentTrackingNumber(trackingNumber);
     }
 
+    /**
+     * Displays a summary of the shipment, including the label, origin, destination,
+     * shipping method, shipping speed, tracking number, and package details.
+     *
+     * @param ship The shipment to display a summary for.
+     */
     public static void displayShipmentSummary(Shipment ship) {
         evaluatePackageConflicts(ship);
         // Display shipment summary
@@ -302,7 +386,14 @@ public class ShipmentBuilder {
         }
     }
 
+    /**
+     * Displays the cost breakdown of the shipment, including base rate, weight surcharge,
+     * modality surcharge, priority surcharge, and the total shipment cost.
+     *
+     * @param ship The shipment to display the cost details for.
+     */
     public static void displayShipmentCost(Shipment ship) {
+        // display the shipment costs
         System.out.println("--- Shipment Cost ---");
         System.out.printf("Base Shipping Rate:           $%.2f\n", ship.getBaseRate());
         System.out.printf("Shipment Weight Surcharge:    $%.2f\n", ship.getWeightSurcharge());
@@ -313,6 +404,12 @@ public class ShipmentBuilder {
 
     }
 
+    /**
+     * Allows the user to modify the packages in the shipment by selecting a package
+     * to modify and updating its attributes.
+     *
+     * @param ship The shipment containing the packages to modify.
+     */
     public static void modifyShipmentPackages(Shipment ship) {
         // Display all packages in the shipment
         System.out.println("--- Packages in Shipment ---");
@@ -347,11 +444,18 @@ public class ShipmentBuilder {
         PackageBuilder.modifyPackage(selectedPackage);
     }
 
-    // Method to handle modifying the shipment
+    /**
+     * Modifies the shipment by displaying a summary and then allowing the user to
+     * choose whether to modify the shipment details (label, packages, origin,
+     * destination, priority, or modality).
+     *
+     * @param shipment The shipment to modify.
+     */
     public static void modifyShipment(Shipment shipment) {
         // Call method to display the configured shipment
         displayShipmentSummary(shipment);
 
+        // ask the user if they wish to modify the shipment
         String modifyMenuChoice;
         OptionMenu modifyMenu = new OptionMenu();
         String[][] modifyMenuOptions = {{"1", "Yes"}, {"2", "No"}};
@@ -362,19 +466,24 @@ public class ShipmentBuilder {
             System.out.println("Would you like to modify the shipment?");
             System.out.printf("\n%s\n", modifyMenu.withTitle("Modify Shipment").menuAsString());
             modifyMenuChoice = modifyMenu.promptForChoice();
-
             willModifyShipment = modifyMenuChoice.equals("1");
             if (willModifyShipment) {
+                // call method to allow the user to modify the shipment
                 modifyShipmentDetails(shipment);
             }
         }
         System.out.println("No modifications requested.");
 
+        // call method to finalize the shipment if no modifications requested by user
         finalizeShipment(shipment);
     }
 
-    // Method to handle modifying specific shipment details
-    private static void modifyShipmentDetails(Shipment shipment) {
+    /**
+     * Allows the user to modify specific details of the shipment, such as label,
+     * packages, origin, destination, priority, or modality.
+     *
+     * @param shipment The shipment to modify.
+     */private static void modifyShipmentDetails(Shipment shipment) {
         System.out.println("Which part of the shipment would you like to modify?");
         OptionMenu shipModifyMenu = new OptionMenu();
         String[][] shipModifyMenuOptions = {{"1", "Label"}, {"2", "Packages"}, {"3", "Origin"},
@@ -385,6 +494,7 @@ public class ShipmentBuilder {
         String shipModifyMenuChoice = "";
         int attempts = 0;
 
+        // limits the user to 5 attempts of menu choice
         while (!validMenuChoice) {
             if (attempts++%5 ==0){
                 System.out.printf("\n%s\n", shipModifyMenu.withTitle("Modification Choice").menuAsString());
@@ -396,6 +506,7 @@ public class ShipmentBuilder {
             validMenuChoice = shipModifyMenu.isValidOption(shipModifyMenuChoice);
         }
 
+        // calls appropriate method based on user choice
         switch (shipModifyMenuChoice) {
             case "1":
                 assignShipmentLabel(shipment);
@@ -424,6 +535,12 @@ public class ShipmentBuilder {
         displayShipmentSummary(shipment);
     }
 
+    /**
+     * Finalizes the shipment by validating it and then displaying the shipment summary and cost.
+     * If the shipment is invalid, it allows the user to modify the shipment.
+     *
+     * @param shipment The shipment to finalize.
+     */
     public static void finalizeShipment(Shipment shipment) {
         boolean didValidate = validateShipment(shipment);
 
@@ -436,7 +553,11 @@ public class ShipmentBuilder {
         }
     }
 
-    //Method to print the summary and costs to a file
+    /**
+     * Exports the shipment details (summary and cost) to a file named "Manifest.txt".
+     *
+     * @param ship The shipment whose details will be exported.
+     */
     public static void exportShipmentDetails(Shipment ship) {
         // File path location
         String filePath = "Manifest.txt";
@@ -481,6 +602,13 @@ public class ShipmentBuilder {
 
     }
 
+    /**
+     * Creates a summary of a package's details, including its label, goods category, dimensions,
+     * weight, and any associated issues.
+     *
+     * @param pkg The package to summarize.
+     * @return A string containing the package's summary.
+     */
     public static String createPackageSummary(Package pkg) {
         StringBuilder sbTemp = new StringBuilder();
         String DIVIDER = "-------------------\n";
